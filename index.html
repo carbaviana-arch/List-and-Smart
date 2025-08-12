@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-<link rel="apple-touch-icon" href="
-  9A7E40BD-3532-4B89-8E05-8F8BCEAE2C75.png">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lista de Compras</title>
@@ -18,7 +17,9 @@
     input, button { padding: 10px; font-size: 16px; margin-top: 5px; }
     ul { list-style: none; padding: 0; }
     li { padding: 8px; background: white; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; border-radius: 5px; }
-    li.comprado { text-decoration: line-through; color: gray; }
+    .comprado span { text-decoration: line-through; color: gray; }
+    .controles { display: flex; gap: 5px; align-items: center; }
+    .cantidad { min-width: 20px; text-align: center; }
   </style>
 </head>
 <body>
@@ -33,20 +34,61 @@
 
     function renderLista() {
       lista.innerHTML = '';
-      items.forEach((texto, index) => {
+      // Ordenar: primero los no comprados, luego los comprados
+      const ordenados = [...items].sort((a, b) => a.comprado - b.comprado);
+
+      ordenados.forEach((obj, index) => {
         const li = document.createElement('li');
-        li.textContent = texto;
-        li.onclick = () => {
-          li.classList.toggle('comprado');
+        if (obj.comprado) li.classList.add('comprado');
+
+        li.onclick = (e) => {
+          if (!e.target.closest('.controles') && e.target.tagName !== 'BUTTON') {
+            obj.comprado = !obj.comprado;
+            guardarLista();
+          }
         };
+
+        const texto = document.createElement('span');
+        texto.textContent = obj.nombre;
+
+        const cantidad = document.createElement('span');
+        cantidad.classList.add('cantidad');
+        cantidad.textContent = obj.cantidad;
+
+        const controles = document.createElement('div');
+        controles.classList.add('controles');
+
+        const menosBtn = document.createElement('button');
+        menosBtn.textContent = '-';
+        menosBtn.onclick = (e) => {
+          e.stopPropagation();
+          if (obj.cantidad > 1) obj.cantidad--;
+          guardarLista();
+        };
+
+        const masBtn = document.createElement('button');
+        masBtn.textContent = '+';
+        masBtn.onclick = (e) => {
+          e.stopPropagation();
+          obj.cantidad++;
+          guardarLista();
+        };
+
         const borrarBtn = document.createElement('button');
         borrarBtn.textContent = '❌';
         borrarBtn.onclick = (e) => {
           e.stopPropagation();
-          items.splice(index, 1);
+          items.splice(items.indexOf(obj), 1);
           guardarLista();
         };
-        li.appendChild(borrarBtn);
+
+        controles.appendChild(menosBtn);
+        controles.appendChild(cantidad);
+        controles.appendChild(masBtn);
+        controles.appendChild(borrarBtn);
+
+        li.appendChild(texto);
+        li.appendChild(controles);
         lista.appendChild(li);
       });
     }
@@ -54,7 +96,7 @@
     function agregarItem() {
       const input = document.getElementById('item');
       if (input.value.trim()) {
-        items.push(input.value.trim());
+        items.push({ nombre: input.value.trim(), cantidad: 1, comprado: false });
         input.value = '';
         guardarLista();
       }
