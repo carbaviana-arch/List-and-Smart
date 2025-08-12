@@ -1,197 +1,145 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lista de Compras</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background: #f9f9f9;
-    }
-    header {
-        background: #4CAF50;
-        color: white;
-        padding: 10px;
-        text-align: center;
-        font-size: 20px;
-    }
-    .container {
-        padding: 10px;
-        padding-bottom: 70px;
-    }
-    input, select, button {
-        padding: 8px;
-        margin: 5px;
-        font-size: 16px;
-    }
-    ul {
-        list-style: none;
-        padding: 0;
-    }
-    li {
-        background: white;
-        margin: 5px 0;
-        padding: 10px;
-        border-radius: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        transition: opacity 0.3s, transform 0.3s;
-    }
-    li.comprado {
-        opacity: 0.5;
-    }
-    .precio-alto {
-        background: #ffebee;
-        border-left: 5px solid red;
-    }
-    .cantidad-controls {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    .dock {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        border-top: 1px solid #ccc;
-        display: flex;
-        justify-content: space-around;
-        padding: 5px 0;
-    }
-    .dock button {
-        background: none;
-        border: none;
-        font-size: 20px;
-        padding: 5px;
-    }
-    .papelera {
-        color: red;
-        font-size: 18px;
-        cursor: pointer;
-    }
-</style>
-</head>
-<body>
+import React, { useState } from "react";
+import { FiList, FiPieChart, FiTrash2, FiDollarSign } from "react-icons/fi";
 
-<header>🛒 Lista de Compras</header>
+export default function App() {
+  const [activeTab, setActiveTab] = useState("lista");
+  const [items, setItems] = useState([
+    { id: 1, nombre: "Patatas", precio: 3, cantidad: 2, categoria: "Verduras", comprado: false },
+    { id: 2, nombre: "Pan", precio: 1.5, cantidad: 3, categoria: "Panadería", comprado: false },
+    { id: 3, nombre: "Aceite", precio: 6, cantidad: 1, categoria: "Despensa", comprado: false }
+  ]);
+  const [presupuesto, setPresupuesto] = useState(50);
 
-<div class="container" id="pantalla-lista">
-    <input type="text" id="nombre" placeholder="Artículo">
-    <input type="number" id="precio" placeholder="Precio €" step="0.01">
-    <select id="categoria">
-        <option value="">Sin categoría</option>
-        <option value="Frutas">Frutas</option>
-        <option value="Verduras">Verduras</option>
-        <option value="Lácteos">Lácteos</option>
-        <option value="Carnes">Carnes</option>
-        <option value="Bebidas">Bebidas</option>
-    </select>
-    <button onclick="agregarArticulo()">Agregar</button>
+  const toggleComprado = (id) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, comprado: !item.comprado } : item
+      ).sort((a, b) => a.comprado - b.comprado)
+    );
+  };
 
-    <ul id="lista"></ul>
-</div>
+  const cambiarCantidad = (id, delta) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, cantidad: Math.max(1, item.cantidad + delta) }
+          : item
+      )
+    );
+  };
 
-<div class="container" id="pantalla-resumen" style="display:none;">
-    <h3>Resumen por Categoría</h3>
-    <ul id="resumen"></ul>
-</div>
+  const eliminarItem = (id) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
+  };
 
-<div class="dock">
-    <button onclick="mostrarPantalla('pantalla-lista')">📝</button>
-    <button onclick="mostrarPantalla('pantalla-resumen')">📊</button>
-</div>
+  const gastoTotal = items.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
 
-<script>
-let articulos = [];
+  const gastoPorCategoria = items.reduce((acc, item) => {
+    const subtotal = item.precio * item.cantidad;
+    acc[item.categoria] = (acc[item.categoria] || 0) + subtotal;
+    return acc;
+  }, {});
 
-function agregarArticulo() {
-    const nombre = document.getElementById("nombre").value.trim();
-    const precio = parseFloat(document.getElementById("precio").value);
-    const categoria = document.getElementById("categoria").value;
-    
-    if (!nombre || isNaN(precio)) return;
-    
-    articulos.push({ nombre, precio, cantidad: 1, comprado: false, categoria });
-    document.getElementById("nombre").value = "";
-    document.getElementById("precio").value = "";
-    document.getElementById("categoria").value = "";
-    mostrarLista();
-}
+  return (
+    <div className="flex flex-col h-screen bg-[#f5e8d8] font-serif">
+      {/* Contenido */}
+      <div className="flex-1 overflow-y-auto p-4">
+        {activeTab === "lista" && (
+          <div>
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className={`flex justify-between items-center p-3 mb-2 rounded-lg shadow-md 
+                  ${item.comprado ? "opacity-50 bg-[#e2d2b0]" : "bg-[#fff4e0]"} 
+                  border border-[#b08d57]`}
+              >
+                <div
+                  className="flex-1 cursor-pointer"
+                  onClick={() => toggleComprado(item.id)}
+                >
+                  <span>{item.nombre} {item.precio.toFixed(2)}€</span>
+                  <span className="mx-2">-</span>
+                  <span
+                    className="px-2 py-1 border border-[#b08d57] rounded cursor-pointer mx-1"
+                    onClick={(e) => { e.stopPropagation(); cambiarCantidad(item.id, -1); }}
+                  >-</span>
+                  <span>{item.cantidad}</span>
+                  <span
+                    className="px-2 py-1 border border-[#b08d57] rounded cursor-pointer mx-1"
+                    onClick={(e) => { e.stopPropagation(); cambiarCantidad(item.id, 1); }}
+                  >+</span>
+                  <span className="ml-2">{(item.precio * item.cantidad).toFixed(2)}€</span>
+                </div>
+                <button
+                  className="text-red-600"
+                  onClick={() => eliminarItem(item.id)}
+                >
+                  <FiTrash2 size={20} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
 
-function mostrarLista() {
-    const lista = document.getElementById("lista");
-    lista.innerHTML = "";
+        {activeTab === "resumen" && (
+          <div className="bg-[#fff4e0] p-4 rounded-lg shadow-md border border-[#b08d57]">
+            <h2 className="text-lg font-bold mb-4">Gasto por categoría</h2>
+            {Object.entries(gastoPorCategoria).map(([cat, total]) => (
+              <div key={cat} className="flex justify-between border-b border-[#b08d57] py-2">
+                <span>{cat}</span>
+                <span>{total.toFixed(2)}€</span>
+              </div>
+            ))}
+            <div className="mt-4 font-bold">Total: {gastoTotal.toFixed(2)}€</div>
+          </div>
+        )}
 
-    let articulosOrdenados = [...articulos].sort((a, b) => a.comprado - b.comprado);
-
-    articulosOrdenados.forEach((art, index) => {
-        const subtotal = (art.precio * art.cantidad).toFixed(2);
-        const li = document.createElement("li");
-
-        if (subtotal >= 5) li.classList.add("precio-alto");
-        if (art.comprado) li.classList.add("comprado");
-
-        li.innerHTML = `
-            <span onclick="toggleComprado(${index})">${art.nombre} ${art.precio.toFixed(2)}€</span>
-            <div class="cantidad-controls">
-                <button onclick="cambiarCantidad(${index}, -1)">-</button>
-                <span>${art.cantidad}</span>
-                <button onclick="cambiarCantidad(${index}, 1)">+</button>
-                <span>${subtotal}€</span>
-                <span class="papelera" onclick="eliminarArticulo(${index})">🗑️</span>
+        {activeTab === "presupuesto" && (
+          <div className="bg-[#fff4e0] p-4 rounded-lg shadow-md border border-[#b08d57]">
+            <h2 className="text-lg font-bold mb-4">Presupuesto</h2>
+            <div className="mb-2">
+              <label className="block mb-1">Presupuesto total (€)</label>
+              <input
+                type="number"
+                value={presupuesto}
+                onChange={(e) => setPresupuesto(Number(e.target.value))}
+                className="w-full p-2 border border-[#b08d57] rounded bg-[#f5e8d8]"
+              />
             </div>
-        `;
-        lista.appendChild(li);
-    });
+            <div className="mt-4">
+              <div className="flex justify-between mb-1">
+                <span>Gastado:</span>
+                <span>{gastoTotal.toFixed(2)}€</span>
+              </div>
+              <div className="w-full bg-[#e2d2b0] rounded-full h-4">
+                <div
+                  className="bg-[#b08d57] h-4 rounded-full"
+                  style={{ width: `${Math.min((gastoTotal / presupuesto) * 100, 100)}%` }}
+                ></div>
+              </div>
+              <div className="mt-2">
+                Restante: {(presupuesto - gastoTotal).toFixed(2)}€
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
-    mostrarResumen();
+      {/* Dock inferior */}
+      <div className="flex justify-around bg-[#b08d57] text-white py-2 border-t border-[#8c6b3d]">
+        <button onClick={() => setActiveTab("lista")} className="flex flex-col items-center">
+          <FiList size={22} />
+          <span className="text-xs">Lista</span>
+        </button>
+        <button onClick={() => setActiveTab("resumen")} className="flex flex-col items-center">
+          <FiPieChart size={22} />
+          <span className="text-xs">Resumen</span>
+        </button>
+        <button onClick={() => setActiveTab("presupuesto")} className="flex flex-col items-center">
+          <FiDollarSign size={22} />
+          <span className="text-xs">Presupuesto</span>
+        </button>
+      </div>
+    </div>
+  );
 }
-
-function cambiarCantidad(index, delta) {
-    articulos[index].cantidad += delta;
-    if (articulos[index].cantidad < 1) articulos[index].cantidad = 1;
-    mostrarLista();
-}
-
-function toggleComprado(index) {
-    articulos[index].comprado = !articulos[index].comprado;
-    mostrarLista();
-}
-
-function eliminarArticulo(index) {
-    articulos.splice(index, 1);
-    mostrarLista();
-}
-
-function mostrarPantalla(id) {
-    document.getElementById("pantalla-lista").style.display = "none";
-    document.getElementById("pantalla-resumen").style.display = "none";
-    document.getElementById(id).style.display = "block";
-}
-
-function mostrarResumen() {
-    const resumen = {};
-    articulos.forEach(art => {
-        const cat = art.categoria || "Sin categoría";
-        if (!resumen[cat]) resumen[cat] = 0;
-        resumen[cat] += art.precio * art.cantidad;
-    });
-
-    const resumenLista = document.getElementById("resumen");
-    resumenLista.innerHTML = "";
-    for (let cat in resumen) {
-        const li = document.createElement("li");
-        li.textContent = `${cat}: ${resumen[cat].toFixed(2)}€`;
-        resumenLista.appendChild(li);
-    }
-}
-</script>
-
-</body>
-</html>
