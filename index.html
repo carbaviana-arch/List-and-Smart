@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Compras</title>
+
+  <!-- Para que iOS lo trate como app -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Lista Compras">
+  <link rel="apple-touch-icon" href="icono.png">
+
+  <style>
+    body { font-family: Arial; max-width: 400px; margin: auto; padding: 20px; background: #f7f7f7; }
+    h1 { text-align: center; }
+    input, button { padding: 10px; font-size: 16px; margin-top: 5px; }
+    ul { list-style: none; padding: 0; }
+    li { padding: 8px; background: white; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; border-radius: 5px; }
+    li.comprado { text-decoration: line-through; color: gray; }
+  </style>
+</head>
+<body>
+  <h1>🛒 Lista de Compras</h1>
+  <input type="text" id="item" placeholder="Añadir producto">
+  <button onclick="agregarItem()">Añadir</button>
+  <ul id="lista"></ul>
+
+  <script>
+    const lista = document.getElementById('lista');
+    let items = JSON.parse(localStorage.getItem('listaCompras')) || [];
+
+    function renderLista() {
+      lista.innerHTML = '';
+      items.forEach((texto, index) => {
+        const li = document.createElement('li');
+        li.textContent = texto;
+        li.onclick = () => {
+          li.classList.toggle('comprado');
+        };
+        const borrarBtn = document.createElement('button');
+        borrarBtn.textContent = '❌';
+        borrarBtn.onclick = (e) => {
+          e.stopPropagation();
+          items.splice(index, 1);
+          guardarLista();
+        };
+        li.appendChild(borrarBtn);
+        lista.appendChild(li);
+      });
+    }
+
+    function agregarItem() {
+      const input = document.getElementById('item');
+      if (input.value.trim()) {
+        items.push(input.value.trim());
+        input.value = '';
+        guardarLista();
+      }
+    }
+
+    function guardarLista() {
+      localStorage.setItem('listaCompras', JSON.stringify(items));
+      renderLista();
+    }
+
+    renderLista();
+  </script>
+</body>
+</html>
