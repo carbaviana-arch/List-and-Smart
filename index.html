@@ -1,145 +1,259 @@
-import React, { useState } from "react";
-import { FiList, FiPieChart, FiTrash2, FiDollarSign } from "react-icons/fi";
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista de Compras Vintage</title>
+<style>
+    body {
+        font-family: 'Georgia', serif;
+        background-color: #f5f0e6;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        color: #4b3832;
+    }
 
-export default function App() {
-  const [activeTab, setActiveTab] = useState("lista");
-  const [items, setItems] = useState([
-    { id: 1, nombre: "Patatas", precio: 3, cantidad: 2, categoria: "Verduras", comprado: false },
-    { id: 2, nombre: "Pan", precio: 1.5, cantidad: 3, categoria: "Panadería", comprado: false },
-    { id: 3, nombre: "Aceite", precio: 6, cantidad: 1, categoria: "Despensa", comprado: false }
-  ]);
-  const [presupuesto, setPresupuesto] = useState(50);
+    header {
+        background-color: #c19a6b;
+        color: #fff;
+        padding: 15px;
+        text-align: center;
+        font-size: 1.5em;
+        font-weight: bold;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
 
-  const toggleComprado = (id) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, comprado: !item.comprado } : item
-      ).sort((a, b) => a.comprado - b.comprado)
-    );
-  };
+    .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px;
+    }
 
-  const cambiarCantidad = (id, delta) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, cantidad: Math.max(1, item.cantidad + delta) }
-          : item
-      )
-    );
-  };
+    .item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px;
+        border-bottom: 1px solid #d9c6b0;
+        background-color: #fff8f0;
+        border-radius: 5px;
+        margin-bottom: 5px;
+        transition: opacity 0.3s;
+    }
 
-  const eliminarItem = (id) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  };
+    .item.comprado {
+        opacity: 0.5;
+        background-color: #e0d6cb;
+    }
 
-  const gastoTotal = items.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+    .item-caro {
+        background-color: #f8e1c4;
+        border: 1px solid #d4a373;
+    }
 
-  const gastoPorCategoria = items.reduce((acc, item) => {
-    const subtotal = item.precio * item.cantidad;
-    acc[item.categoria] = (acc[item.categoria] || 0) + subtotal;
-    return acc;
-  }, {});
+    .nombre {
+        flex: 2;
+        cursor: pointer;
+    }
 
-  return (
-    <div className="flex flex-col h-screen bg-[#f5e8d8] font-serif">
-      {/* Contenido */}
-      <div className="flex-1 overflow-y-auto p-4">
-        {activeTab === "lista" && (
-          <div>
-            {items.map((item) => (
-              <div
-                key={item.id}
-                className={`flex justify-between items-center p-3 mb-2 rounded-lg shadow-md 
-                  ${item.comprado ? "opacity-50 bg-[#e2d2b0]" : "bg-[#fff4e0]"} 
-                  border border-[#b08d57]`}
-              >
-                <div
-                  className="flex-1 cursor-pointer"
-                  onClick={() => toggleComprado(item.id)}
-                >
-                  <span>{item.nombre} {item.precio.toFixed(2)}€</span>
-                  <span className="mx-2">-</span>
-                  <span
-                    className="px-2 py-1 border border-[#b08d57] rounded cursor-pointer mx-1"
-                    onClick={(e) => { e.stopPropagation(); cambiarCantidad(item.id, -1); }}
-                  >-</span>
-                  <span>{item.cantidad}</span>
-                  <span
-                    className="px-2 py-1 border border-[#b08d57] rounded cursor-pointer mx-1"
-                    onClick={(e) => { e.stopPropagation(); cambiarCantidad(item.id, 1); }}
-                  >+</span>
-                  <span className="ml-2">{(item.precio * item.cantidad).toFixed(2)}€</span>
-                </div>
-                <button
-                  className="text-red-600"
-                  onClick={() => eliminarItem(item.id)}
-                >
-                  <FiTrash2 size={20} />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+    .cantidad-control {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
 
-        {activeTab === "resumen" && (
-          <div className="bg-[#fff4e0] p-4 rounded-lg shadow-md border border-[#b08d57]">
-            <h2 className="text-lg font-bold mb-4">Gasto por categoría</h2>
-            {Object.entries(gastoPorCategoria).map(([cat, total]) => (
-              <div key={cat} className="flex justify-between border-b border-[#b08d57] py-2">
-                <span>{cat}</span>
-                <span>{total.toFixed(2)}€</span>
-              </div>
-            ))}
-            <div className="mt-4 font-bold">Total: {gastoTotal.toFixed(2)}€</div>
-          </div>
-        )}
+    button {
+        border: none;
+        background-color: #c19a6b;
+        color: #fff;
+        padding: 5px 8px;
+        font-size: 1em;
+        border-radius: 4px;
+        cursor: pointer;
+    }
 
-        {activeTab === "presupuesto" && (
-          <div className="bg-[#fff4e0] p-4 rounded-lg shadow-md border border-[#b08d57]">
-            <h2 className="text-lg font-bold mb-4">Presupuesto</h2>
-            <div className="mb-2">
-              <label className="block mb-1">Presupuesto total (€)</label>
-              <input
-                type="number"
-                value={presupuesto}
-                onChange={(e) => setPresupuesto(Number(e.target.value))}
-                className="w-full p-2 border border-[#b08d57] rounded bg-[#f5e8d8]"
-              />
-            </div>
-            <div className="mt-4">
-              <div className="flex justify-between mb-1">
-                <span>Gastado:</span>
-                <span>{gastoTotal.toFixed(2)}€</span>
-              </div>
-              <div className="w-full bg-[#e2d2b0] rounded-full h-4">
-                <div
-                  className="bg-[#b08d57] h-4 rounded-full"
-                  style={{ width: `${Math.min((gastoTotal / presupuesto) * 100, 100)}%` }}
-                ></div>
-              </div>
-              <div className="mt-2">
-                Restante: {(presupuesto - gastoTotal).toFixed(2)}€
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+    button:hover {
+        background-color: #a67c52;
+    }
 
-      {/* Dock inferior */}
-      <div className="flex justify-around bg-[#b08d57] text-white py-2 border-t border-[#8c6b3d]">
-        <button onClick={() => setActiveTab("lista")} className="flex flex-col items-center">
-          <FiList size={22} />
-          <span className="text-xs">Lista</span>
-        </button>
-        <button onClick={() => setActiveTab("resumen")} className="flex flex-col items-center">
-          <FiPieChart size={22} />
-          <span className="text-xs">Resumen</span>
-        </button>
-        <button onClick={() => setActiveTab("presupuesto")} className="flex flex-col items-center">
-          <FiDollarSign size={22} />
-          <span className="text-xs">Presupuesto</span>
-        </button>
-      </div>
+    .precio {
+        margin-left: 5px;
+        font-weight: bold;
+    }
+
+    .subtotal {
+        margin-left: 10px;
+        font-weight: bold;
+        color: #5a3e36;
+    }
+
+    .delete-btn {
+        background-color: transparent;
+        color: red;
+        font-size: 1.2em;
+        cursor: pointer;
+    }
+
+    .dock {
+        display: flex;
+        justify-content: space-around;
+        background-color: #c19a6b;
+        padding: 8px 0;
+        border-top: 2px solid #a67c52;
+    }
+
+    .dock button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.4em;
+        padding: 4px;
+    }
+
+    .dock button:active {
+        transform: scale(0.9);
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .resumen {
+        padding: 10px;
+        background-color: #fff8f0;
+        border-radius: 5px;
+        border: 1px solid #d9c6b0;
+    }
+
+</style>
+</head>
+<body>
+
+<header>🛒 Lista de Compras Vintage</header>
+
+<div class="content" id="listaTab">
+    <div id="lista"></div>
+</div>
+
+<div class="content hidden" id="resumenTab">
+    <div class="resumen" id="resumen"></div>
+</div>
+
+<div class="content hidden" id="presupuestoTab">
+    <div class="resumen">
+        <label for="presupuesto">Presupuesto (€): </label>
+        <input type="number" id="presupuesto" min="0" step="0.01">
+        <p id="estadoPresupuesto"></p>
     </div>
-  );
+</div>
+
+<div class="dock">
+    <button onclick="mostrarTab('listaTab')">📋</button>
+    <button onclick="mostrarTab('resumenTab')">📊</button>
+    <button onclick="mostrarTab('presupuestoTab')">💰</button>
+</div>
+
+<script>
+let listaCompras = [
+    {nombre: 'Patatas', precio: 3.00, cantidad: 2, categoria: 'Verduras', comprado: false},
+    {nombre: 'Manzana', precio: 0.50, cantidad: 4, categoria: 'Frutas', comprado: false},
+    {nombre: 'Aceite', precio: 6.00, cantidad: 1, categoria: 'Despensa', comprado: false}
+];
+let presupuesto = 0;
+
+function renderLista() {
+    const listaDiv = document.getElementById("lista");
+    listaDiv.innerHTML = "";
+
+    const activos = listaCompras.filter(i => !i.comprado);
+    const comprados = listaCompras.filter(i => i.comprado);
+
+    [...activos, ...comprados].forEach((item, index) => {
+        const subtotal = (item.precio * item.cantidad).toFixed(2);
+        const itemDiv = document.createElement("div");
+        itemDiv.className = "item";
+        if (item.comprado) itemDiv.classList.add("comprado");
+        if (subtotal >= 5) itemDiv.classList.add("item-caro");
+
+        itemDiv.innerHTML = `
+            <div class="nombre" onclick="toggleComprado(${index})">${item.nombre} ${item.precio.toFixed(2)}€</div>
+            <div class="cantidad-control">
+                <button onclick="cambiarCantidad(${index}, -1)">-</button>
+                <span>${item.cantidad}</span>
+                <button onclick="cambiarCantidad(${index}, 1)">+</button>
+                <span class="subtotal">${subtotal}€</span>
+                <button class="delete-btn" onclick="eliminarItem(${index})">🗑️</button>
+            </div>
+        `;
+        listaDiv.appendChild(itemDiv);
+    });
 }
+
+function cambiarCantidad(index, cambio) {
+    listaCompras[index].cantidad += cambio;
+    if (listaCompras[index].cantidad < 1) listaCompras[index].cantidad = 1;
+    renderLista();
+    renderResumen();
+    actualizarEstadoPresupuesto();
+}
+
+function toggleComprado(index) {
+    listaCompras[index].comprado = !listaCompras[index].comprado;
+    renderLista();
+}
+
+function eliminarItem(index) {
+    listaCompras.splice(index, 1);
+    renderLista();
+    renderResumen();
+    actualizarEstadoPresupuesto();
+}
+
+function renderResumen() {
+    const resumenDiv = document.getElementById("resumen");
+    resumenDiv.innerHTML = "";
+    const resumen = {};
+
+    listaCompras.forEach(item => {
+        if (!resumen[item.categoria]) resumen[item.categoria] = 0;
+        resumen[item.categoria] += item.precio * item.cantidad;
+    });
+
+    for (let cat in resumen) {
+        resumenDiv.innerHTML += `<p><strong>${cat}:</strong> ${resumen[cat].toFixed(2)}€</p>`;
+    }
+}
+
+function mostrarTab(tabId) {
+    document.querySelectorAll(".content").forEach(tab => tab.classList.add("hidden"));
+    document.getElementById(tabId).classList.remove("hidden");
+}
+
+function actualizarEstadoPresupuesto() {
+    if (presupuesto > 0) {
+        const total = listaCompras.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+        const estado = document.getElementById("estadoPresupuesto");
+        if (total > presupuesto) {
+            estado.textContent = `⚠️ Te has pasado del presupuesto por ${(total - presupuesto).toFixed(2)}€`;
+            estado.style.color = "red";
+        } else {
+            estado.textContent = `✅ Dentro del presupuesto. Te quedan ${(presupuesto - total).toFixed(2)}€`;
+            estado.style.color = "green";
+        }
+    }
+}
+
+document.getElementById("presupuesto").addEventListener("input", (e) => {
+    presupuesto = parseFloat(e.target.value) || 0;
+    actualizarEstadoPresupuesto();
+});
+
+renderLista();
+renderResumen();
+</script>
+
+</body>
+</html>
