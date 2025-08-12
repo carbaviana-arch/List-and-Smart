@@ -50,6 +50,11 @@
       margin-top: 20px;
       border-left: 4px solid #4caf50;
     }
+    /* Resalte para artículos caros */
+    li.caros {
+      background-color: #ffe0b2;
+      font-weight: bold;
+    }
     .info {
       flex-grow: 1;
       display: flex;
@@ -115,7 +120,6 @@
     const lista = document.getElementById('lista');
     const totalEl = document.getElementById('total');
 
-    // Prueba: lista precargada para demo (se guarda en localStorage solo si está vacía)
     let items = JSON.parse(localStorage.getItem('listaCompras')) || [
       { texto: "Manzana", categoria: "Frutas", cantidad: 3, precio: 0.50, comprado: false },
       { texto: "Lechuga", categoria: "Verduras", cantidad: 1, precio: 1.20, comprado: false },
@@ -125,7 +129,6 @@
       { texto: "Galletas", categoria: "Otros", cantidad: 1, precio: 1.80, comprado: false },
     ];
 
-    // Guardar demo si no existía nada
     if (!localStorage.getItem('listaCompras')) {
       localStorage.setItem('listaCompras', JSON.stringify(items));
     }
@@ -157,6 +160,11 @@
     function crearLi(item) {
       const li = document.createElement('li');
       if (item.comprado) li.classList.add('comprado');
+
+      // Resaltar si subtotal >= 5€
+      if (item.cantidad * item.precio >= 5) {
+        li.classList.add('caros');
+      }
 
       const info = document.createElement('div');
       info.className = 'info';
