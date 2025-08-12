@@ -20,10 +20,13 @@
       text-align: center;
     }
     input,
+    select,
     button {
       padding: 10px;
       font-size: 16px;
       margin-top: 5px;
+      width: 100%;
+      box-sizing: border-box;
     }
     ul {
       list-style: none;
@@ -50,8 +53,16 @@
     .info {
       flex-grow: 1;
       display: flex;
-      align-items: center;
-      gap: 5px;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .nombre-precio {
+      font-weight: bold;
+    }
+    .categoria {
+      font-size: 0.9em;
+      color: #555;
+      font-style: italic;
     }
     .controles {
       display: flex;
@@ -72,7 +83,6 @@
       padding: 0 4px;
       font-size: 14px;
     }
-    /* Estilo para el separador de comprados */
     li.separador {
       background: none;
       cursor: default;
@@ -87,6 +97,15 @@
 <body>
   <h1>🛒 Lista de Compras</h1>
   <input type="text" id="item" placeholder="Producto" />
+  <select id="categoria">
+    <option value="">-- Categoría (opcional) --</option>
+    <option value="Frutas">Frutas</option>
+    <option value="Verduras">Verduras</option>
+    <option value="Lácteos">Lácteos</option>
+    <option value="Carnes">Carnes</option>
+    <option value="Bebidas">Bebidas</option>
+    <option value="Otros">Otros</option>
+  </select>
   <input type="number" id="precio" placeholder="Precio" min="0" step="0.01" />
   <button onclick="agregarItem()">Añadir</button>
   <ul id="lista"></ul>
@@ -95,7 +114,21 @@
   <script>
     const lista = document.getElementById('lista');
     const totalEl = document.getElementById('total');
-    let items = JSON.parse(localStorage.getItem('listaCompras')) || [];
+
+    // Prueba: lista precargada para demo (se guarda en localStorage solo si está vacía)
+    let items = JSON.parse(localStorage.getItem('listaCompras')) || [
+      { texto: "Manzana", categoria: "Frutas", cantidad: 3, precio: 0.50, comprado: false },
+      { texto: "Lechuga", categoria: "Verduras", cantidad: 1, precio: 1.20, comprado: false },
+      { texto: "Leche", categoria: "Lácteos", cantidad: 2, precio: 0.90, comprado: true },
+      { texto: "Pollo", categoria: "Carnes", cantidad: 1, precio: 5.50, comprado: false },
+      { texto: "Agua mineral", categoria: "Bebidas", cantidad: 6, precio: 0.30, comprado: false },
+      { texto: "Galletas", categoria: "Otros", cantidad: 1, precio: 1.80, comprado: false },
+    ];
+
+    // Guardar demo si no existía nada
+    if (!localStorage.getItem('listaCompras')) {
+      localStorage.setItem('listaCompras', JSON.stringify(items));
+    }
 
     function renderLista() {
       lista.innerHTML = '';
@@ -127,7 +160,18 @@
 
       const info = document.createElement('div');
       info.className = 'info';
-      info.innerHTML = `<strong>${item.texto || 'Sin nombre'}</strong> ${item.precio.toFixed(2)}€`;
+
+      const nombrePrecio = document.createElement('div');
+      nombrePrecio.className = 'nombre-precio';
+      nombrePrecio.textContent = `${item.texto || 'Sin nombre'} ${item.precio.toFixed(2)}€`;
+
+      const categoria = document.createElement('div');
+      categoria.className = 'categoria';
+      categoria.textContent = item.categoria ? `Categoría: ${item.categoria}` : 'Categoría: Sin asignar';
+
+      info.appendChild(nombrePrecio);
+      info.appendChild(categoria);
+
       li.appendChild(info);
 
       const controles = document.createElement('div');
@@ -178,8 +222,11 @@
 
     function agregarItem() {
       const input = document.getElementById('item');
+      const categoriaSelect = document.getElementById('categoria');
       const precioInput = document.getElementById('precio');
+
       const texto = input.value.trim();
+      const categoria = categoriaSelect.value;
       const precio = parseFloat(precioInput.value);
 
       if (!texto) {
@@ -193,12 +240,14 @@
 
       items.push({
         texto: texto,
+        categoria: categoria,
         cantidad: 1,
         precio: precio,
         comprado: false,
       });
 
       input.value = '';
+      categoriaSelect.value = '';
       precioInput.value = '';
       guardarLista();
     }
