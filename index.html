@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lista de Compras</title>
 
-  <!-- Para que iOS lo trate como app -->
+  <!-- Configuración para iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Lista Compras">
-  <link rel="apple-touch-icon" href="icono.png">
+  <link rel="apple-touch-icon" href="9A7E40BD-3532-4B89-8E05-8F8BCEAE2C75.png">
+  <link rel="icon" type="image/png" href="9A7E40BD-3532-4B89-8E05-8F8BCEAE2C75.png">
 
   <style>
     body { font-family: Arial; max-width: 400px; margin: auto; padding: 20px; background: #f7f7f7; }
@@ -17,9 +18,8 @@
     input, button { padding: 10px; font-size: 16px; margin-top: 5px; }
     ul { list-style: none; padding: 0; }
     li { padding: 8px; background: white; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; border-radius: 5px; }
-    .comprado span { text-decoration: line-through; color: gray; }
-    .controles { display: flex; gap: 5px; align-items: center; }
-    .cantidad { min-width: 20px; text-align: center; }
+    li.comprado { text-decoration: line-through; color: gray; }
+    .cantidad-btn { padding: 5px 10px; margin: 0 3px; }
   </style>
 </head>
 <body>
@@ -34,61 +34,50 @@
 
     function renderLista() {
       lista.innerHTML = '';
-      // Ordenar: primero los no comprados, luego los comprados
-      const ordenados = [...items].sort((a, b) => a.comprado - b.comprado);
-
-      ordenados.forEach((obj, index) => {
+      items.forEach((item, index) => {
         const li = document.createElement('li');
-        if (obj.comprado) li.classList.add('comprado');
+        if (item.comprado) li.classList.add('comprado');
 
-        li.onclick = (e) => {
-          if (!e.target.closest('.controles') && e.target.tagName !== 'BUTTON') {
-            obj.comprado = !obj.comprado;
-            guardarLista();
-          }
+        // Texto del producto
+        const texto = document.createElement('span');
+        texto.textContent = `${item.nombre} (${item.cantidad})`;
+        texto.onclick = () => {
+          item.comprado = !item.comprado; // Alterna comprado/no comprado
+          guardarLista();
         };
 
-        const texto = document.createElement('span');
-        texto.textContent = obj.nombre;
-
-        const cantidad = document.createElement('span');
-        cantidad.classList.add('cantidad');
-        cantidad.textContent = obj.cantidad;
-
-        const controles = document.createElement('div');
-        controles.classList.add('controles');
-
+        // Botones cantidad
         const menosBtn = document.createElement('button');
         menosBtn.textContent = '-';
+        menosBtn.className = 'cantidad-btn';
         menosBtn.onclick = (e) => {
           e.stopPropagation();
-          if (obj.cantidad > 1) obj.cantidad--;
+          if (item.cantidad > 1) item.cantidad--;
           guardarLista();
         };
 
         const masBtn = document.createElement('button');
         masBtn.textContent = '+';
+        masBtn.className = 'cantidad-btn';
         masBtn.onclick = (e) => {
           e.stopPropagation();
-          obj.cantidad++;
+          item.cantidad++;
           guardarLista();
         };
 
+        // Botón borrar
         const borrarBtn = document.createElement('button');
         borrarBtn.textContent = '❌';
         borrarBtn.onclick = (e) => {
           e.stopPropagation();
-          items.splice(items.indexOf(obj), 1);
+          items.splice(index, 1);
           guardarLista();
         };
 
-        controles.appendChild(menosBtn);
-        controles.appendChild(cantidad);
-        controles.appendChild(masBtn);
-        controles.appendChild(borrarBtn);
-
         li.appendChild(texto);
-        li.appendChild(controles);
+        li.appendChild(menosBtn);
+        li.appendChild(masBtn);
+        li.appendChild(borrarBtn);
         lista.appendChild(li);
       });
     }
