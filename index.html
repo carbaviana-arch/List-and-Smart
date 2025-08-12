@@ -1,28 +1,78 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lista de Compras</title>
 
   <!-- Icono de la app -->
-  <link rel="apple-touch-icon" href="9A7E40BD-3532-4B89-8E05-8F8BCEAE2C75.png">
+  <link rel="apple-touch-icon" href="9A7E40BD-3532-4B89-8E05-8F8BCEAE2C75.png" />
 
   <style>
-    body { font-family: Arial; max-width: 400px; margin: auto; padding: 20px; background: #f7f7f7; }
-    h1 { text-align: center; }
-    input, button { padding: 10px; font-size: 16px; margin-top: 5px; }
-    ul { list-style: none; padding: 0; }
-    li { padding: 8px; background: white; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; border-radius: 5px; }
-    li.comprado { opacity: 0.5; }
-    .info { flex-grow: 1; display: flex; align-items: center; gap: 5px; }
-    .controles button { padding: 2px 6px; }
+    body {
+      font-family: Arial;
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      background: #f7f7f7;
+    }
+    h1 {
+      text-align: center;
+    }
+    input,
+    button {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 5px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 8px;
+      background: white;
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 5px;
+      cursor: pointer;
+      user-select: none;
+    }
+    li.comprado {
+      opacity: 0.5;
+      font-style: italic;
+      background-color: #e0e0e0;
+      margin-top: 20px;
+      border-left: 4px solid #4caf50;
+    }
+    .info {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .controles button {
+      padding: 2px 6px;
+      cursor: pointer;
+    }
+    /* Estilo para el separador de comprados */
+    li.separador {
+      background: none;
+      cursor: default;
+      font-weight: bold;
+      margin-top: 15px;
+      opacity: 1 !important;
+      border: none;
+      justify-content: flex-start;
+    }
   </style>
 </head>
 <body>
   <h1>🛒 Lista de Compras</h1>
-  <input type="text" id="item" placeholder="Producto">
-  <input type="number" id="precio" placeholder="Precio" min="0" step="0.01">
+  <input type="text" id="item" placeholder="Producto" />
+  <input type="number" id="precio" placeholder="Precio" min="0" step="0.01" />
   <button onclick="agregarItem()">Añadir</button>
   <ul id="lista"></ul>
   <h2>Total: <span id="total">0.00</span> €</h2>
@@ -35,75 +85,85 @@
     function renderLista() {
       lista.innerHTML = '';
 
-      // Primero los no comprados, luego los comprados
-      let pendientes = items.filter(i => !i.comprado);
-      let comprados = items.filter(i => i.comprado);
-      let ordenados = [...pendientes, ...comprados];
+      let pendientes = items.filter((i) => !i.comprado);
+      let comprados = items.filter((i) => i.comprado);
 
-      ordenados.forEach((item, index) => {
-        const li = document.createElement('li');
-        if (item.comprado) li.classList.add('comprado');
+      pendientes.forEach((item) => {
+        crearLi(item);
+      });
 
-        // Info del producto
-        const info = document.createElement('div');
-        info.className = 'info';
-        info.innerHTML = `<strong>${item.texto}</strong> - ${item.cantidad} u. x ${item.precio}€ = <strong>${(item.cantidad * item.precio).toFixed(2)}€</strong>`;
-        li.appendChild(info);
+      if (comprados.length > 0) {
+        const sep = document.createElement('li');
+        sep.textContent = '🛒 Comprados';
+        sep.className = 'separador';
+        lista.appendChild(sep);
+      }
 
-        // Controles
-        const controles = document.createElement('div');
-        controles.className = 'controles';
-
-        const menos = document.createElement('button');
-        menos.textContent = '-';
-        menos.onclick = (e) => {
-          e.stopPropagation();
-          if (item.cantidad > 1) item.cantidad--;
-          guardarLista();
-        };
-
-        const mas = document.createElement('button');
-        mas.textContent = '+';
-        mas.onclick = (e) => {
-          e.stopPropagation();
-          item.cantidad++;
-          guardarLista();
-        };
-
-        const borrar = document.createElement('button');
-        borrar.textContent = '❌';
-        borrar.onclick = (e) => {
-          e.stopPropagation();
-          items = items.filter((_, i) => i !== items.indexOf(item));
-          guardarLista();
-        };
-
-        controles.appendChild(menos);
-        controles.appendChild(mas);
-        controles.appendChild(borrar);
-        li.appendChild(controles);
-
-        // Marcar como comprado o pendiente
-        li.onclick = () => {
-          item.comprado = !item.comprado;
-          guardarLista();
-        };
-
-        lista.appendChild(li);
+      comprados.forEach((item) => {
+        crearLi(item);
       });
 
       calcularTotal();
+    }
+
+    function crearLi(item) {
+      const li = document.createElement('li');
+      if (item.comprado) li.classList.add('comprado');
+
+      const info = document.createElement('div');
+      info.className = 'info';
+      info.innerHTML = `<strong>${item.texto}</strong> - ${item.cantidad} u. x ${item.precio.toFixed(2)}€ = <strong>${(item.cantidad * item.precio).toFixed(2)}€</strong>`;
+      li.appendChild(info);
+
+      const controles = document.createElement('div');
+      controles.className = 'controles';
+
+      const menos = document.createElement('button');
+      menos.textContent = '-';
+      menos.onclick = (e) => {
+        e.stopPropagation();
+        if (item.cantidad > 1) item.cantidad--;
+        guardarLista();
+      };
+
+      const mas = document.createElement('button');
+      mas.textContent = '+';
+      mas.onclick = (e) => {
+        e.stopPropagation();
+        item.cantidad++;
+        guardarLista();
+      };
+
+      const borrar = document.createElement('button');
+      borrar.textContent = '❌';
+      borrar.onclick = (e) => {
+        e.stopPropagation();
+        items = items.filter((i) => i !== item);
+        guardarLista();
+      };
+
+      controles.appendChild(menos);
+      controles.appendChild(mas);
+      controles.appendChild(borrar);
+      li.appendChild(controles);
+
+      li.onclick = () => {
+        item.comprado = !item.comprado;
+        guardarLista();
+      };
+
+      lista.appendChild(li);
     }
 
     function agregarItem() {
       const input = document.getElementById('item');
       const precioInput = document.getElementById('precio');
       if (input.value.trim() && precioInput.value.trim()) {
-        items.push({ 
-          texto: input.value.trim(), 
-          cantidad: 1, 
-          precio: parseFloat(precioInput.value), 
-          comprado: false 
+        items.push({
+          texto: input.value.trim(),
+          cantidad: 1,
+          precio: parseFloat(precioInput.value),
+          comprado: false,
         });
         input.value = '';
         precioInput.value = '';
@@ -117,7 +177,7 @@
     }
 
     function calcularTotal() {
-      let total = items.reduce((acc, item) => acc + (item.cantidad * item.precio), 0);
+      let total = items.reduce((acc, item) => acc + item.cantidad * item.precio, 0);
       totalEl.textContent = total.toFixed(2);
     }
 
