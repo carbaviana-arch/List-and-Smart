@@ -19,7 +19,9 @@
     ul { list-style: none; padding: 0; }
     li { padding: 8px; background: white; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; border-radius: 5px; }
     li.comprado { text-decoration: line-through; color: gray; }
-    .cantidad-btn { padding: 5px 10px; margin: 0 3px; }
+    .cantidad-btn { padding: 5px 10px; margin: 0; }
+    .cantidad-container { display: flex; align-items: center; gap: 5px; }
+    .cantidad-num { min-width: 20px; text-align: center; }
   </style>
 </head>
 <body>
@@ -40,13 +42,16 @@
 
         // Texto del producto
         const texto = document.createElement('span');
-        texto.textContent = `${item.nombre} (${item.cantidad})`;
+        texto.textContent = item.nombre;
         texto.onclick = () => {
-          item.comprado = !item.comprado; // Alterna comprado/no comprado
+          item.comprado = !item.comprado;
           guardarLista();
         };
 
-        // Botones cantidad
+        // Contenedor de cantidad
+        const cantidadContainer = document.createElement('div');
+        cantidadContainer.className = 'cantidad-container';
+
         const menosBtn = document.createElement('button');
         menosBtn.textContent = '-';
         menosBtn.className = 'cantidad-btn';
@@ -56,6 +61,10 @@
           guardarLista();
         };
 
+        const cantidadNum = document.createElement('span');
+        cantidadNum.textContent = item.cantidad;
+        cantidadNum.className = 'cantidad-num';
+
         const masBtn = document.createElement('button');
         masBtn.textContent = '+';
         masBtn.className = 'cantidad-btn';
@@ -64,6 +73,10 @@
           item.cantidad++;
           guardarLista();
         };
+
+        cantidadContainer.appendChild(menosBtn);
+        cantidadContainer.appendChild(cantidadNum);
+        cantidadContainer.appendChild(masBtn);
 
         // Botón borrar
         const borrarBtn = document.createElement('button');
@@ -75,8 +88,7 @@
         };
 
         li.appendChild(texto);
-        li.appendChild(menosBtn);
-        li.appendChild(masBtn);
+        li.appendChild(cantidadContainer);
         li.appendChild(borrarBtn);
         lista.appendChild(li);
       });
