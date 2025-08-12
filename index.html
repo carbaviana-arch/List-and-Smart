@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Le Cellier</title>
 <style>
-  /* Fuente elegante con sabor vintage francés */
   @import url('https://fonts.googleapis.com/css2?family=Parisienne&family=Playfair+Display:wght@400;700&display=swap');
 
   body {
@@ -35,12 +34,11 @@
   .content {
     flex: 1;
     overflow-y: auto;
-    padding: 15px 20px 80px; /* espacio para dock y contador */
+    padding: 15px 20px 80px;
     box-sizing: border-box;
     position: relative;
   }
 
-  /* Formulario agregar producto */
   .agregar-form {
     background: #f2ede7;
     border: 2px solid #c7b79e;
@@ -90,7 +88,6 @@
     background-color: #9d7f53;
   }
 
-  /* Lista items */
   #lista {
     margin: 0;
   }
@@ -165,7 +162,6 @@
     color: #7a2f2f;
   }
 
-  /* Contador flotante presupuesto */
   #contadorPresupuesto {
     position: fixed;
     bottom: 70px;
@@ -184,12 +180,10 @@
     text-align: center;
   }
 
-  /* Tabs content */
   .hidden {
     display: none;
   }
 
-  /* Resumen */
   .resumen {
     background: #f2ede7;
     border-radius: 10px;
@@ -205,7 +199,6 @@
     margin: 8px 0;
   }
 
-  /* Dock */
   .dock {
     position: fixed;
     bottom: 0;
@@ -240,12 +233,10 @@
     transform: scale(1.1);
   }
 
-  /* Form input focus outline for accessibility */
   input:focus, select:focus, button:focus {
     outline: 2px solid #9d7f53;
     outline-offset: 2px;
   }
-
 </style>
 </head>
 <body>
@@ -297,11 +288,9 @@
 </div>
 
 <script>
-  // Datos en localStorage
   let listaCompras = JSON.parse(localStorage.getItem('listaCompras')) || [];
   let presupuesto = parseFloat(localStorage.getItem('presupuesto')) || 0;
 
-  // Referencias DOM
   const listaDiv = document.getElementById("lista");
   const resumenDiv = document.getElementById("resumen");
   const presupuestoInput = document.getElementById("presupuesto");
@@ -315,131 +304,10 @@
     presupuestoTab: document.getElementById("presupuestoTab")
   };
 
-  // Renderizar lista de compras
-  function renderLista() {
-    listaDiv.innerHTML = "";
-
-    const activos = listaCompras.filter(i => !i.comprado);
-    const comprados = listaCompras.filter(i => i.comprado);
-    [...activos, ...comprados].forEach((item, index) => {
-      const subtotal = (item.precio * item.cantidad).toFixed(2);
-
-      const itemDiv = document.createElement("div");
-      itemDiv.className = "item";
-      if (item.comprado) itemDiv.classList.add("comprado");
-      if (subtotal >= 5) itemDiv.classList.add("item-caro");
-
-      itemDiv.innerHTML = `
-        <div class="nombre" onclick="toggleComprado(${index})" tabindex="0" role="button" aria-pressed="${item.comprado}" aria-label="Marcar ${item.nombre} como comprado o no">${item.nombre} ${item.precio.toFixed(2)}€</div>
-        <div class="cantidad-control" aria-label="Controles de cantidad y eliminación">
-          <button class="cantidad-btn" aria-label="Disminuir cantidad de ${item.nombre}" onclick="cambiarCantidad(${index}, -1)">-</button>
-          <span aria-live="polite" aria-atomic="true">${item.cantidad}</span>
-          <button class="cantidad-btn" aria-label="Aumentar cantidad de ${item.nombre}" onclick="cambiarCantidad(${index}, 1)">+</button>
-          <span class="subtotal">${subtotal}€</span>
-          <button class="delete-btn" aria-label="Eliminar ${item.nombre}" onclick="eliminarItem(${index})">🗑️</button>
-        </div>
-      `;
-
-      listaDiv.appendChild(itemDiv);
-    });
-
-    guardarDatos();
-    actualizarContadorPresupuesto();
+  function generarId() {
+    return Date.now() + Math.random().toString(16).slice(2);
   }
 
-  // Cambiar cantidad
-  function cambiarCantidad(index, cambio) {
-    listaCompras[index].cantidad += cambio;
-    if (listaCompras[index].cantidad < 1) listaCompras[index].cantidad = 1;
-    renderLista();
-    renderResumen();
-    actualizarEstadoPresupuesto();
-  }
-
-  // Marcar comprado
-  function toggleComprado(index) {
-    listaCompras[index].comprado = !listaCompras[index].comprado;
-    renderLista();
-  }
-
-  // Eliminar item
-  function eliminarItem(index) {
-    listaCompras.splice(index, 1);
-    renderLista();
-    renderResumen();
-    actualizarEstadoPresupuesto();
-  }
-
-  // Renderizar resumen por categoría
-  function renderResumen() {
-    resumenDiv.innerHTML = "";
-    const resumen = {};
-
-    listaCompras.forEach(item => {
-      const cat = item.categoria || 'Sin asignar';
-      resumen[cat] = (resumen[cat] || 0) + item.precio * item.cantidad;
-    });
-
-    for (const cat in resumen) {
-      const p = document.createElement("p");
-      p.textContent = `${cat}: ${resumen[cat].toFixed(2)}€`;
-      resumenDiv.appendChild(p);
-    }
-  }
-
-  // Mostrar pestaña activa
-  function mostrarTab(id) {
-    for (const tabId in tabs) {
-      tabs[tabId].classList.toggle("hidden", tabId !== id);
-    }
-    btnsDock.forEach(btn => {
-      const selected = btn.getAttribute("aria-controls") === id;
-      btn.setAttribute("aria-selected", selected);
-      btn.tabIndex = selected ? 0 : -1;
-    });
-
-    if (id === "resumenTab") renderResumen();
-    if (id === "presupuestoTab") actualizarEstadoPresupuesto();
-  }
-
-  // Actualizar presupuesto y mostrar aviso si se pasa
-  function actualizarEstadoPresupuesto() {
-    if (presupuesto > 0) {
-      const total = listaCompras.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
-      if (total > presupuesto) {
-        estadoPresupuesto.textContent = `⚠️ Te has pasado del presupuesto por ${(total - presupuesto).toFixed(2)}€`;
-        estadoPresupuesto.style.color = "#b94848";
-      } else {
-        estadoPresupuesto.textContent = `✅ Dentro del presupuesto. Te quedan ${(presupuesto - total).toFixed(2)}€`;
-        estadoPresupuesto.style.color = "#4a703d";
-      }
-    } else {
-      estadoPresupuesto.textContent = "";
-    }
-  }
-
-  // Contador flotante presupuesto restante
-  function actualizarContadorPresupuesto() {
-    if (presupuesto > 0) {
-      const totalComprado = listaCompras
-        .filter(i => i.comprado)
-        .reduce((sum, i) => sum + i.precio * i.cantidad, 0);
-      const restante = presupuesto - totalComprado;
-      contadorPresupuesto.textContent = `Presupuesto restante: ${restante.toFixed(2)}€`;
-      contadorPresupuesto.style.color = restante < 0 ? "#b94848" : "#4a703d";
-    } else {
-      contadorPresupuesto.textContent = "Define un presupuesto para controlar tus gastos";
-      contadorPresupuesto.style.color = "#6b5e4a";
-    }
-  }
-
-  // Guardar datos
-  function guardarDatos() {
-    localStorage.setItem('listaCompras', JSON.stringify(listaCompras));
-    localStorage.setItem('presupuesto', presupuesto.toString());
-  }
-
-  // Añadir producto desde el formulario
   document.getElementById("formAgregar").addEventListener("submit", e => {
     e.preventDefault();
 
@@ -457,14 +325,140 @@
       return;
     }
 
-    listaCompras.push({ nombre, categoria, precio, cantidad: 1, comprado: false });
+    listaCompras.push({
+      id: generarId(),
+      nombre,
+      categoria,
+      precio,
+      cantidad: 1,
+      comprado: false
+    });
     document.getElementById("formAgregar").reset();
     renderLista();
     renderResumen();
     actualizarEstadoPresupuesto();
   });
 
-  // Cambiar presupuesto
+  function cambiarCantidad(id, cambio) {
+    const item = listaCompras.find(i => i.id === id);
+    if (!item) return;
+    item.cantidad += cambio;
+    if (item.cantidad < 1) item.cantidad = 1;
+    renderLista();
+    renderResumen();
+    actualizarEstadoPresupuesto();
+  }
+
+  function toggleComprado(id) {
+    const item = listaCompras.find(i => i.id === id);
+    if (!item) return;
+    item.comprado = !item.comprado;
+    renderLista();
+    actualizarEstadoPresupuesto();
+  }
+
+  function eliminarItem(id) {
+    listaCompras = listaCompras.filter(i => i.id !== id);
+    renderLista();
+    renderResumen();
+    actualizarEstadoPresupuesto();
+  }
+
+  function renderLista() {
+    listaDiv.innerHTML = "";
+
+    const activos = listaCompras.filter(i => !i.comprado);
+    const comprados = listaCompras.filter(i => i.comprado);
+    [...activos, ...comprados].forEach(item => {
+      const subtotal = (item.precio * item.cantidad).toFixed(2);
+
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "item";
+      if (item.comprado) itemDiv.classList.add("comprado");
+      if (subtotal >= 5) itemDiv.classList.add("item-caro");
+
+      itemDiv.innerHTML = `
+        <div class="nombre" onclick="toggleComprado('${item.id}')" tabindex="0" role="button" aria-pressed="${item.comprado}" aria-label="Marcar ${item.nombre} como comprado o no">${item.nombre} ${item.precio.toFixed(2)}€</div>
+        <div class="cantidad-control" aria-label="Controles de cantidad y eliminación">
+          <button class="cantidad-btn" aria-label="Disminuir cantidad de ${item.nombre}" onclick="cambiarCantidad('${item.id}', -1)">-</button>
+          <span aria-live="polite" aria-atomic="true">${item.cantidad}</span>
+          <button class="cantidad-btn" aria-label="Aumentar cantidad de ${item.nombre}" onclick="cambiarCantidad('${item.id}', 1)">+</button>
+          <span class="subtotal">${subtotal}€</span>
+          <button class="delete-btn" aria-label="Eliminar ${item.nombre}" onclick="eliminarItem('${item.id}')">🗑️</button>
+        </div>
+      `;
+
+      listaDiv.appendChild(itemDiv);
+    });
+
+    guardarDatos();
+    actualizarContadorPresupuesto();
+  }
+
+  function renderResumen() {
+    resumenDiv.innerHTML = "";
+    const resumen = {};
+
+    listaCompras.forEach(item => {
+      const cat = item.categoria || 'Sin asignar';
+      resumen[cat] = (resumen[cat] || 0) + item.precio * item.cantidad;
+    });
+
+    for (const cat in resumen) {
+      const p = document.createElement("p");
+      p.textContent = `${cat}: ${resumen[cat].toFixed(2)}€`;
+      resumenDiv.appendChild(p);
+    }
+  }
+
+  function mostrarTab(id) {
+    for (const tabId in tabs) {
+      tabs[tabId].classList.toggle("hidden", tabId !== id);
+    }
+    btnsDock.forEach(btn => {
+      const selected = btn.getAttribute("aria-controls") === id;
+      btn.setAttribute("aria-selected", selected);
+      btn.tabIndex = selected ? 0 : -1;
+    });
+
+    if (id === "resumenTab") renderResumen();
+    if (id === "presupuestoTab") actualizarEstadoPresupuesto();
+  }
+
+  function actualizarEstadoPresupuesto() {
+    if (presupuesto > 0) {
+      const total = listaCompras.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+      if (total > presupuesto) {
+        estadoPresupuesto.textContent = `⚠️ Te has pasado del presupuesto por ${(total - presupuesto).toFixed(2)}€`;
+        estadoPresupuesto.style.color = "#b94848";
+      } else {
+        estadoPresupuesto.textContent = `✅ Dentro del presupuesto. Te quedan ${(presupuesto - total).toFixed(2)}€`;
+        estadoPresupuesto.style.color = "#4a703d";
+      }
+    } else {
+      estadoPresupuesto.textContent = "";
+    }
+  }
+
+  function actualizarContadorPresupuesto() {
+    if (presupuesto > 0) {
+      const totalComprado = listaCompras
+        .filter(i => i.comprado)
+        .reduce((sum, i) => sum + i.precio * i.cantidad, 0);
+      const restante = presupuesto - totalComprado;
+      contadorPresupuesto.textContent = `Presupuesto restante: ${restante.toFixed(2)}€`;
+      contadorPresupuesto.style.color = restante < 0 ? "#b94848" : "#4a703d";
+    } else {
+      contadorPresupuesto.textContent = "Define un presupuesto para controlar tus gastos";
+      contadorPresupuesto.style.color = "#6b5e4a";
+    }
+  }
+
+  function guardarDatos() {
+    localStorage.setItem('listaCompras', JSON.stringify(listaCompras));
+    localStorage.setItem('presupuesto', presupuesto.toString());
+  }
+
   presupuestoInput.value = presupuesto || "";
   presupuestoInput.addEventListener("input", e => {
     presupuesto = parseFloat(e.target.value) || 0;
@@ -473,11 +467,11 @@
     actualizarContadorPresupuesto();
   });
 
-  // Inicialización
+  // Inicializar vista
   renderLista();
-  renderResumen();
   actualizarEstadoPresupuesto();
   actualizarContadorPresupuesto();
+
 </script>
 
 </body>
