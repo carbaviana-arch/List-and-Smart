@@ -5,91 +5,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lista de Compras</title>
 
-  <!-- Configuración para iOS -->
+  <!-- Modo app en iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Lista Compras">
   <link rel="apple-touch-icon" href="9A7E40BD-3532-4B89-8E05-8F8BCEAE2C75.png">
-  <link rel="icon" type="image/png" href="9A7E40BD-3532-4B89-8E05-8F8BCEAE2C75.png">
 
   <style>
     body { font-family: Arial; max-width: 400px; margin: auto; padding: 20px; background: #f7f7f7; }
     h1 { text-align: center; }
     input, button { padding: 10px; font-size: 16px; margin-top: 5px; }
     ul { list-style: none; padding: 0; }
-    li { padding: 8px; background: white; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; border-radius: 5px; flex-wrap: wrap; }
+    li { padding: 8px; background: white; margin-bottom: 5px; border-radius: 5px; }
+    .controles { display: flex; align-items: center; gap: 5px; }
     li.comprado { text-decoration: line-through; color: gray; }
-    .cantidad-btn { padding: 5px 10px; margin: 0; }
-    .cantidad-container { display: flex; align-items: center; gap: 5px; }
-    .cantidad-num { min-width: 20px; text-align: center; }
-    .precio { font-size: 14px; color: #555; margin-left: 5px; }
+    .precio { font-size: 14px; color: #333; margin-left: 5px; }
   </style>
 </head>
 <body>
   <h1>🛒 Lista de Compras</h1>
-  <input type="text" id="item" placeholder="Añadir producto">
-  <input type="number" id="precio" placeholder="Precio/unidad" step="0.01" min="0">
+  <input type="text" id="item" placeholder="Producto">
+  <input type="number" id="precio" placeholder="Precio unitario" step="0.01" min="0">
   <button onclick="agregarItem()">Añadir</button>
-  
   <ul id="lista"></ul>
-  <h3 id="total">Total: €0.00</h3>
 
   <script>
     const lista = document.getElementById('lista');
-    const totalEl = document.getElementById('total');
     let items = JSON.parse(localStorage.getItem('listaCompras')) || [];
 
     function renderLista() {
       lista.innerHTML = '';
-      let total = 0;
-
       items.forEach((item, index) => {
         const li = document.createElement('li');
-        if (item.comprado) li.classList.add('comprado');
 
-        // Texto y precio
-        const texto = document.createElement('span');
-        texto.textContent = item.nombre;
-        texto.onclick = () => {
-          item.comprado = !item.comprado;
-          guardarLista();
-        };
-
-        const precioSpan = document.createElement('span');
-        precioSpan.textContent = `€${item.precio.toFixed(2)}`;
-        precioSpan.className = 'precio';
-
-        // Contenedor de cantidad
-        const cantidadContainer = document.createElement('div');
-        cantidadContainer.className = 'cantidad-container';
+        // Controles de cantidad y subtotal
+        const controles = document.createElement('div');
+        controles.className = 'controles';
 
         const menosBtn = document.createElement('button');
-        menosBtn.textContent = '-';
-        menosBtn.className = 'cantidad-btn';
-        menosBtn.onclick = (e) => {
-          e.stopPropagation();
-          if (item.cantidad > 1) item.cantidad--;
-          guardarLista();
+        menosBtn.textContent = '−';
+        menosBtn.onclick = () => {
+          if (item.cantidad > 1) {
+            item.cantidad--;
+            guardarLista();
+          }
         };
 
-        const cantidadNum = document.createElement('span');
-        cantidadNum.textContent = item.cantidad;
-        cantidadNum.className = 'cantidad-num';
+        const cantidad = document.createElement('span');
+        cantidad.textContent = item.cantidad;
 
         const masBtn = document.createElement('button');
         masBtn.textContent = '+';
-        masBtn.className = 'cantidad-btn';
-        masBtn.onclick = (e) => {
-          e.stopPropagation();
+        masBtn.onclick = () => {
           item.cantidad++;
           guardarLista();
         };
 
-        cantidadContainer.appendChild(menosBtn);
-        cantidadContainer.appendChild(cantidadNum);
-        cantidadContainer.appendChild(masBtn);
+        const nombre = document.createElement('span');
+        nombre.textContent = item.nombre;
+        nombre.style.flex = '1';
+        nombre.onclick = () => {
+          item.comprado = !item.comprado;
+          guardarLista();
+        };
+        if (item.comprado) nombre.classList.add('comprado');
 
-        // Botón borrar
+        const precio = document.createElement('span');
+        precio.className = 'precio';
+        precio.textContent = `€${item.precio.toFixed(2)} c/u`;
+
+        const subtotal = document.createElement('span');
+        subtotal.className = 'precio';
+        subtotal.textContent = `Subtotal: €${(item.cantidad * item.precio).toFixed(2)}`;
+
         const borrarBtn = document.createElement('button');
         borrarBtn.textContent = '❌';
         borrarBtn.onclick = (e) => {
@@ -98,30 +86,29 @@
           guardarLista();
         };
 
-        li.appendChild(texto);
-        li.appendChild(precioSpan);
-        li.appendChild(cantidadContainer);
-        li.appendChild(borrarBtn);
+        controles.appendChild(menosBtn);
+        controles.appendChild(cantidad);
+        controles.appendChild(masBtn);
+        controles.appendChild(precio);
+        controles.appendChild(subtotal);
+        controles.appendChild(borrarBtn);
+
+        li.appendChild(nombre);
+        li.appendChild(controles);
         lista.appendChild(li);
-
-        // Calcular total
-        total += item.precio * item.cantidad;
       });
-
-      totalEl.textContent = `Total: €${total.toFixed(2)}`;
     }
 
     function agregarItem() {
-      const inputNombre = document.getElementById('item');
-      const inputPrecio = document.getElementById('precio');
+      const nombreInput = document.getElementById('item');
+      const precioInput = document.getElementById('precio');
+      const nombre = nombreInput.value.trim();
+      const precio = parseFloat(precioInput.value);
 
-      const nombre = inputNombre.value.trim();
-      const precio = parseFloat(inputPrecio.value);
-
-      if (nombre && !isNaN(precio) && precio >= 0) {
-        items.push({ nombre, precio, cantidad: 1, comprado: false });
-        inputNombre.value = '';
-        inputPrecio.value = '';
+      if (nombre && !isNaN(precio)) {
+        items.push({ nombre, cantidad: 1, precio, comprado: false });
+        nombreInput.value = '';
+        precioInput.value = '';
         guardarLista();
       }
     }
