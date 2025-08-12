@@ -112,7 +112,7 @@
 
       const info = document.createElement('div');
       info.className = 'info';
-      info.innerHTML = `<strong>${item.texto}</strong> - ${item.cantidad} u. x ${item.precio.toFixed(2)}€ = <strong>${(item.cantidad * item.precio).toFixed(2)}€</strong>`;
+      info.innerHTML = `<strong>${item.texto || 'Sin nombre'}</strong> - ${item.cantidad} u. x ${item.precio.toFixed(2)}€ = <strong>${(item.cantidad * item.precio).toFixed(2)}€</strong>`;
       li.appendChild(info);
 
       const controles = document.createElement('div');
@@ -158,17 +158,28 @@
     function agregarItem() {
       const input = document.getElementById('item');
       const precioInput = document.getElementById('precio');
-      if (input.value.trim() && precioInput.value.trim()) {
-        items.push({
-          texto: input.value.trim(),
-          cantidad: 1,
-          precio: parseFloat(precioInput.value),
-          comprado: false,
-        });
-        input.value = '';
-        precioInput.value = '';
-        guardarLista();
+      const texto = input.value.trim();
+      const precio = parseFloat(precioInput.value);
+
+      if (!texto) {
+        alert('Por favor, escribe el nombre del producto');
+        return;
       }
+      if (isNaN(precio) || precio < 0) {
+        alert('Por favor, introduce un precio válido');
+        return;
+      }
+
+      items.push({
+        texto: texto,
+        cantidad: 1,
+        precio: precio,
+        comprado: false,
+      });
+
+      input.value = '';
+      precioInput.value = '';
+      guardarLista();
     }
 
     function guardarLista() {
