@@ -1,544 +1,240 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Lista de Compras con Dock SVG</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista de Compras</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
-
   body {
-    font-family: 'Roboto', Arial, sans-serif;
-    max-width: 480px;
-    margin: auto;
-    padding: 20px 20px 80px; /* espacio para dock */
-    background: #fafafa;
-    color: #333;
-    position: relative;
-    min-height: 100vh;
-    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0 0 70px 0; /* espacio para el dock */
+    background-color: #f8f9fa;
   }
-
   h1 {
     text-align: center;
-    margin-bottom: 0;
-    color: #2c3e50;
+    margin: 10px 0;
   }
-
-  .content {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    min-height: 320px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: opacity 0.3s ease;
+  .contenedor {
+    padding: 10px;
   }
-
-  input, select, button {
-    padding: 12px 15px;
-    font-size: 16px;
-    margin-top: 12px;
-    width: 100%;
-    box-sizing: border-box;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  input:focus, select:focus {
-    border-color: #27ae60;
-    box-shadow: 0 0 6px #27ae60aa;
-    outline: none;
-  }
-
-  button {
-    background-color: #27ae60;
-    color: white;
-    border: none;
-    font-weight: 500;
-    cursor: pointer;
-    user-select: none;
-    box-shadow: 0 3px 7px rgba(39, 174, 96, 0.6);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  button:hover {
-    background-color: #219150;
-    box-shadow: 0 4px 10px rgba(33, 145, 80, 0.8);
-  }
-
   ul {
     list-style: none;
     padding: 0;
-    margin: 18px 0 0 0;
-    max-height: 360px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: #27ae60 #e0e0e0;
+    margin: 0;
   }
-  ul::-webkit-scrollbar {
-    width: 8px;
-  }
-  ul::-webkit-scrollbar-thumb {
-    background-color: #27ae60;
-    border-radius: 4px;
-  }
-  ul::-webkit-scrollbar-track {
-    background-color: #e0e0e0;
-  }
-
   li {
-    padding: 12px 16px;
-    background: white;
-    margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-radius: 12px;
-    cursor: pointer;
-    user-select: none;
-    border: 1px solid #ddd;
-    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-  }
-  li:hover {
-    border-color: #27ae60;
-    background-color: #e6f5e9;
+    background: white;
+    margin-bottom: 5px;
+    padding: 10px;
+    border-radius: 8px;
+    transition: opacity 0.3s;
   }
   li.comprado {
     opacity: 0.5;
-    font-style: italic;
-    background-color: #f0f0f0;
-    margin-top: 20px;
-    border-left: 6px solid #27ae60;
-  }
-  li.caros {
-    background-color: #fff3e0 !important;
-    font-weight: 600;
   }
   .info {
-    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
   }
   .nombre-precio {
-    font-weight: 600;
-    font-size: 1.1em;
-    color: #2c3e50;
+    font-size: 16px;
+    font-weight: bold;
   }
   .categoria {
-    font-size: 0.9em;
+    font-size: 12px;
     color: #666;
-    font-style: italic;
   }
-  .controles {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .controles button {
-    padding: 4px 8px;
-    cursor: pointer;
-    user-select: none;
-    border-radius: 8px;
-    border: 1.5px solid #bbb;
-    background: #f5f5f5;
-    color: #555;
-    font-weight: 600;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-  }
-  .controles button:hover {
-    background-color: #d0f0d9;
-    border-color: #27ae60;
-    color: #27ae60;
-  }
-  .cantidad-span {
-    min-width: 24px;
-    text-align: center;
-    user-select: none;
-    font-weight: 600;
-    color: #2c3e50;
-  }
-  .controles .btn-borrar {
-    padding: 0 6px;
-    font-size: 16px;
-    color: #c0392b;
-    border-color: #c0392b;
-    background: #fdecea;
-    transition: background-color 0.3s ease;
-  }
-  .controles .btn-borrar:hover {
-    background: #f8d7da;
-  }
-  li.separador {
-    background: none;
-    cursor: default;
-    font-weight: 700;
-    margin-top: 20px;
-    opacity: 1 !important;
+  button {
     border: none;
-    justify-content: flex-start;
-    color: #27ae60;
-    font-size: 1.1em;
-    user-select: none;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 5px 8px;
+    font-size: 14px;
   }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 14px;
-  }
-  th, td {
-    padding: 12px 10px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
-  }
-  th {
-    background-color: #27ae60;
-    color: white;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    font-weight: 600;
-  }
-  tfoot td {
-    font-weight: 700;
-    border-top: 3px solid #27ae60;
-  }
-
-  /* Dock inferior mejorado con SVG */
   .dock {
     position: fixed;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
     width: 100%;
-    max-width: 480px;
-    background: white;
-    border-top: 1px solid #ddd;
+    background: #ffffff;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
     display: flex;
     justify-content: space-around;
-    padding: 10px 0;
-    box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
-    z-index: 1000;
-    user-select: none;
-    border-radius: 12px 12px 0 0;
+    padding: 5px 0;
   }
   .dock button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #7f8c8d;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    font-size: 18px;
+    border-radius: 50%;
+    background: #f1f1f1;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 6px;
-    font-weight: 500;
-    transition: color 0.35s ease, transform 0.3s ease;
-    padding: 2px 4px;
+    justify-content: center;
   }
-  .dock button.active {
-    color: #27ae60;
-    transform: scale(1.1);
-    font-weight: 700;
+  .activo {
+    background: #007bff;
+    color: white;
   }
-  .dock button span {
-    font-size: 13px;
-    color: inherit;
-    user-select: none;
+  .oculto {
+    display: none;
   }
-  .dock button:hover:not(.active) {
-    color: #2ecc71;
-    transform: scale(1.05);
-  }
-  .dock svg {
-    width: 28px;
-    height: 28px;
-    fill: currentColor;
-    transition: fill 0.3s ease;
+  .caro {
+    background-color: #ffe0b2 !important;
+    font-weight: bold;
   }
 </style>
 </head>
 <body>
 
-  <h1>🛒 Lista de Compras</h1>
+<h1>Lista de Compras</h1>
 
-  <div class="content" id="lista-tab">
-    <input type="text" id="item" placeholder="Producto" />
-    <select id="categoria" aria-label="Seleccionar categoría (opcional)">
-      <option value="">-- Categoría (opcional) --</option>
-      <option value="Frutas">Frutas</option>
-      <option value="Verduras">Verduras</option>
-      <option value="Lácteos">Lácteos</option>
-      <option value="Carnes">Carnes</option>
-      <option value="Bebidas">Bebidas</option>
-      <option value="Otros">Otros</option>
-    </select>
-    <input type="number" id="precio" placeholder="Precio" min="0" step="0.01" />
-    <button onclick="agregarItem()">Añadir</button>
-    <ul id="lista" aria-live="polite" aria-relevant="additions removals"></ul>
-    <h2>Total: <span id="total">0.00</span> €</h2>
-  </div>
+<div id="pantalla-lista" class="contenedor">
+  <input type="text" id="nuevo-articulo" placeholder="Artículo">
+  <input type="number" id="precio-articulo" placeholder="Precio" step="0.01">
+  <input type="number" id="cantidad-articulo" placeholder="Cantidad" value="1" min="1">
+  <select id="categoria-articulo">
+    <option value="">Sin categoría</option>
+    <option value="Frutas">Frutas</option>
+    <option value="Verduras">Verduras</option>
+    <option value="Carnes">Carnes</option>
+    <option value="Lácteos">Lácteos</option>
+    <option value="Bebidas">Bebidas</option>
+    <option value="Otros">Otros</option>
+  </select>
+  <button onclick="agregarArticulo()">Añadir</button>
+  <ul id="lista"></ul>
+</div>
 
-  <div class="content" id="resumen-tab" style="display:none;">
-    <h3>Gasto total por categoría</h3>
-    <table id="tabla-resumen" aria-label="Tabla resumen por categoría">
-      <thead>
-        <tr>
-          <th>Categoría</th>
-          <th>Total (€)</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-      <tfoot>
-        <tr>
-          <td>Total general</td>
-          <td id="total-general">0.00</td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
+<div id="pantalla-resumen" class="contenedor oculto">
+  <h2>Gasto por Categoría</h2>
+  <ul id="resumen-categorias"></ul>
+  <h3 id="total-general"></h3>
+</div>
 
-  <nav class="dock" role="tablist" aria-label="Navegación de pestañas">
-    <button id="btn-lista" class="active" aria-selected="true" aria-controls="lista-tab" role="tab" tabindex="0" aria-label="Ver lista de compras">
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"/>
-      </svg>
-      <span>Lista</span>
-    </button>
-    <button id="btn-resumen" aria-selected="false" aria-controls="resumen-tab" role="tab" tabindex="-1" aria-label="Ver resumen por categoría">
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M4 10h4v7H4zm6-4h4v11h-4zm6 7h4v4h-4z"/>
-      </svg>
-      <span>Resumen</span>
-    </button>
-  </nav>
+<div class="dock">
+  <button id="btn-lista" class="activo" onclick="mostrarPantalla('lista')">📝</button>
+  <button id="btn-resumen" onclick="mostrarPantalla('resumen')">📊</button>
+</div>
 
 <script>
-  const lista = document.getElementById('lista');
-  const totalEl = document.getElementById('total');
-  const resumenTab = document.getElementById('resumen-tab');
-  const listaTab = document.getElementById('lista-tab');
-  const tablaResumenBody = document.querySelector('#tabla-resumen tbody');
-  const totalGeneralEl = document.getElementById('total-general');
+  let articulos = [];
 
-  const btnLista = document.getElementById('btn-lista');
-  const btnResumen = document.getElementById('btn-resumen');
+  function agregarArticulo() {
+    const texto = document.getElementById('nuevo-articulo').value.trim();
+    const precio = parseFloat(document.getElementById('precio-articulo').value);
+    const cantidad = parseInt(document.getElementById('cantidad-articulo').value);
+    const categoria = document.getElementById('categoria-articulo').value;
 
-  let items = JSON.parse(localStorage.getItem('listaCompras')) || [];
+    if (!texto || isNaN(precio) || isNaN(cantidad)) return;
+
+    articulos.push({ texto, precio, cantidad, categoria, comprado: false });
+    document.getElementById('nuevo-articulo').value = '';
+    document.getElementById('precio-articulo').value = '';
+    document.getElementById('cantidad-articulo').value = 1;
+    document.getElementById('categoria-articulo').value = '';
+    renderLista();
+  }
+
+  function toggleComprado(index) {
+    articulos[index].comprado = !articulos[index].comprado;
+    renderLista();
+  }
+
+  function borrarArticulo(index) {
+    articulos.splice(index, 1);
+    renderLista();
+  }
 
   function renderLista() {
+    const lista = document.getElementById('lista');
     lista.innerHTML = '';
 
-    let pendientes = items.filter((i) => !i.comprado);
-    let comprados = items.filter((i) => i.comprado);
+    // Ordenar: no comprados primero, luego comprados
+    const ordenados = [...articulos].sort((a, b) => a.comprado - b.comprado);
 
-    pendientes.forEach((item) => {
-      crearLi(item);
+    ordenados.forEach((item, i) => {
+      const li = document.createElement('li');
+      if (item.comprado) li.classList.add('comprado');
+
+      const subtotal = item.cantidad * item.precio;
+      if (subtotal >= 5) li.classList.add('caro');
+
+      const info = document.createElement('div');
+      info.className = 'info';
+
+      const nombrePrecio = document.createElement('div');
+      nombrePrecio.className = 'nombre-precio';
+      nombrePrecio.textContent = `${item.texto} ${item.precio.toFixed(2)}€`;
+
+      const categoria = document.createElement('div');
+      categoria.className = 'categoria';
+      categoria.textContent = item.categoria ? `Categoría: ${item.categoria}` : '';
+
+      info.appendChild(nombrePrecio);
+      info.appendChild(categoria);
+
+      li.appendChild(info);
+
+      const btnComprar = document.createElement('button');
+      btnComprar.textContent = item.comprado ? '↩️' : '✅';
+      btnComprar.onclick = () => toggleComprado(articulos.indexOf(item));
+
+      const btnBorrar = document.createElement('button');
+      btnBorrar.textContent = '🗑️';
+      btnBorrar.onclick = () => borrarArticulo(articulos.indexOf(item));
+
+      li.appendChild(btnComprar);
+      li.appendChild(btnBorrar);
+
+      lista.appendChild(li);
+    });
+  }
+
+  function mostrarPantalla(pantalla) {
+    document.getElementById('pantalla-lista').classList.add('oculto');
+    document.getElementById('pantalla-resumen').classList.add('oculto');
+    document.getElementById('btn-lista').classList.remove('activo');
+    document.getElementById('btn-resumen').classList.remove('activo');
+
+    if (pantalla === 'lista') {
+      document.getElementById('pantalla-lista').classList.remove('oculto');
+      document.getElementById('btn-lista').classList.add('activo');
+    } else {
+      renderResumen();
+      document.getElementById('pantalla-resumen').classList.remove('oculto');
+      document.getElementById('btn-resumen').classList.add('activo');
+    }
+  }
+
+  function renderResumen() {
+    const resumenCategorias = document.getElementById('resumen-categorias');
+    resumenCategorias.innerHTML = '';
+
+    const gastoPorCategoria = {};
+    let total = 0;
+
+    articulos.forEach(item => {
+      const subtotal = item.cantidad * item.precio;
+      total += subtotal;
+      const cat = item.categoria || 'Sin categoría';
+      gastoPorCategoria[cat] = (gastoPorCategoria[cat] || 0) + subtotal;
     });
 
-    if (comprados.length > 0) {
-      const sep = document.createElement('li');
-      sep.textContent = '🛒 Comprados';
-      sep.className = 'separador';
-      lista.appendChild(sep);
+    for (const cat in gastoPorCategoria) {
+      const li = document.createElement('li');
+      li.textContent = `${cat}: ${gastoPorCategoria[cat].toFixed(2)}€`;
+      resumenCategorias.appendChild(li);
     }
 
-    comprados.forEach((item) => {
-      crearLi(item);
-    });
-
-    calcularTotal();
+    document.getElementById('total-general').textContent = `Total: ${total.toFixed(2)}€`;
   }
-
-  function crearLi(item) {
-    const li = document.createElement('li');
-    if (item.comprado) li.classList.add('comprado');
-
-    if (item.cantidad * item.precio >= 5) {
-      li.classList.add('caros');
-    }
-
-    const info = document.createElement('div');
-    info.className = 'info';
-
-    const nombrePrecio = document.createElement('div');
-    nombrePrecio.className = 'nombre-precio';
-    nombrePrecio.textContent = `${item.texto || 'Sin nombre'} ${item.precio.toFixed(2)}€`;
-
-    const categoria = document.createElement('div');
-    categoria.className = 'categoria';
-    categoria.textContent = item.categoria ? `Categoría: ${item.categoria}` : 'Categoría: Sin asignar';
-
-    info.appendChild(nombrePrecio);
-    info.appendChild(categoria);
-
-    li.appendChild(info);
-
-    const controles = document.createElement('div');
-    controles.className = 'controles';
-
-    const menos = document.createElement('button');
-    menos.textContent = '-';
-    menos.setAttribute('aria-label', `Disminuir cantidad de ${item.texto}`);
-    menos.onclick = (e) => {
-      e.stopPropagation();
-      if (item.cantidad > 1) item.cantidad--;
-      guardarLista();
-    };
-
-    const cantidadSpan = document.createElement('span');
-    cantidadSpan.textContent = item.cantidad;
-    cantidadSpan.className = 'cantidad-span';
-
-    const mas = document.createElement('button');
-    mas.textContent = '+';
-    mas.setAttribute('aria-label', `Aumentar cantidad de ${item.texto}`);
-    mas.onclick = (e) => {
-      e.stopPropagation();
-      item.cantidad++;
-      guardarLista();
-    };
-
-    const borrar = document.createElement('button');
-    borrar.textContent = '❌';
-    borrar.className = 'btn-borrar';
-    borrar.setAttribute('aria-label', `Eliminar ${item.texto} de la lista`);
-    borrar.onclick = (e) => {
-      e.stopPropagation();
-      items = items.filter((i) => i !== item);
-      guardarLista();
-    };
-
-    controles.appendChild(menos);
-    controles.appendChild(cantidadSpan);
-    controles.appendChild(mas);
-    controles.appendChild(borrar);
-    li.appendChild(controles);
-
-    li.onclick = () => {
-      item.comprado = !item.comprado;
-      guardarLista();
-    };
-
-    lista.appendChild(li);
-  }
-
-  function agregarItem() {
-    const input = document.getElementById('item');
-    const categoriaSelect = document.getElementById('categoria');
-    const precioInput = document.getElementById('precio');
-
-    const texto = input.value.trim();
-    const categoria = categoriaSelect.value;
-    const precio = parseFloat(precioInput.value);
-
-    if (!texto) {
-      alert('Por favor, escribe el nombre del producto');
-      return;
-    }
-    if (isNaN(precio) || precio < 0) {
-      alert('Por favor, introduce un precio válido');
-      return;
-    }
-
-    items.push({
-      texto: texto,
-      categoria: categoria,
-      cantidad: 1,
-      precio: precio,
-      comprado: false,
-    });
-
-    input.value = '';
-    categoriaSelect.value = '';
-    precioInput.value = '';
-    guardarLista();
-  }
-
-  function guardarLista() {
-    localStorage.setItem('listaCompras', JSON.stringify(items));
-    renderLista();
-  }
-
-  function calcularTotal() {
-    let total = items.reduce((acc, item) => acc + item.cantidad * item.precio, 0);
-    totalEl.textContent = total.toFixed(2);
-  }
-
-  function mostrarResumen() {
-    tablaResumenBody.innerHTML = '';
-
-    const resumen = {};
-    let totalGeneral = 0;
-
-    items.forEach(({ categoria, cantidad, precio }) => {
-      const cat = categoria || 'Sin asignar';
-      const subtotal = cantidad * precio;
-      resumen[cat] = (resumen[cat] || 0) + subtotal;
-      totalGeneral += subtotal;
-    });
-
-    for (const [cat, total] of Object.entries(resumen)) {
-      const tr = document.createElement('tr');
-      const tdCat = document.createElement('td');
-      tdCat.textContent = cat;
-      const tdTotal = document.createElement('td');
-      tdTotal.textContent = total.toFixed(2) + ' €';
-
-      tr.appendChild(tdCat);
-      tr.appendChild(tdTotal);
-      tablaResumenBody.appendChild(tr);
-    }
-
-    totalGeneralEl.textContent = totalGeneral.toFixed(2) + ' €';
-  }
-
-  // Control pestañas dock
-  btnLista.addEventListener('click', () => {
-    btnLista.classList.add('active');
-    btnResumen.classList.remove('active');
-    btnLista.setAttribute('aria-selected', 'true');
-    btnResumen.setAttribute('aria-selected', 'false');
-    btnLista.setAttribute('tabindex', '0');
-    btnResumen.setAttribute('tabindex', '-1');
-
-    listaTab.style.opacity = 0;
-    resumenTab.style.opacity = 0;
-
-    setTimeout(() => {
-      listaTab.style.display = 'block';
-      resumenTab.style.display = 'none';
-      listaTab.style.opacity = 1;
-    }, 250);
-
-    renderLista();
-  });
-
-  btnResumen.addEventListener('click', () => {
-    btnResumen.classList.add('active');
-    btnLista.classList.remove('active');
-    btnResumen.setAttribute('aria-selected', 'true');
-    btnLista.setAttribute('aria-selected', 'false');
-    btnResumen.setAttribute('tabindex', '0');
-    btnLista.setAttribute('tabindex', '-1');
-
-    listaTab.style.opacity = 0;
-    resumenTab.style.opacity = 0;
-
-    setTimeout(() => {
-      listaTab.style.display = 'none';
-      resumenTab.style.display = 'block';
-      resumenTab.style.opacity = 1;
-    }, 250);
-
-    mostrarResumen();
-  });
-
-  // Inicializar
-  renderLista();
 </script>
+
 </body>
 </html>
