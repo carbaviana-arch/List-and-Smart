@@ -68,6 +68,10 @@
       text-align: center;
       user-select: none;
     }
+    .controles .btn-borrar {
+      padding: 0 4px;
+      font-size: 14px;
+    }
     /* Estilo para el separador de comprados */
     li.separador {
       background: none;
@@ -123,7 +127,7 @@
 
       const info = document.createElement('div');
       info.className = 'info';
-      info.innerHTML = `<strong>${item.texto || 'Sin nombre'}</strong> - ${item.cantidad} u. x ${item.precio.toFixed(2)}€ = <strong>${(item.cantidad * item.precio).toFixed(2)}€</strong>`;
+      info.innerHTML = `<strong>${item.texto || 'Sin nombre'}</strong> ${item.precio.toFixed(2)}€`;
       li.appendChild(info);
 
       const controles = document.createElement('div');
@@ -151,6 +155,7 @@
 
       const borrar = document.createElement('button');
       borrar.textContent = '❌';
+      borrar.className = 'btn-borrar';
       borrar.onclick = (e) => {
         e.stopPropagation();
         items = items.filter((i) => i !== item);
