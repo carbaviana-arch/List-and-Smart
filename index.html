@@ -7,27 +7,31 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Rye&display=swap" rel="stylesheet">
 <style>
 :root {
-  --color-bg: #000000;
-  --color-text: #FFFFFF;
-  --color-gold: #C9A23F;
-  --color-vintage-bg: #f8f1e4;
-  --color-vintage-border: #5a4634;
+  --color-bg: #f8f1e4;
+  --color-text: #3e2f1c;
+  --color-border: #5a4634;
+  --color-gold: #c9a23f;
+  --color-danger: #a33;
 }
 
 body {
   margin: 0;
   font-family: 'Playfair Display', serif;
-  background-color: var(--color-bg);
+  background: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
   color: var(--color-text);
+  border: 10px solid var(--color-border);
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 header {
   text-align: center;
   padding: 15px;
   font-family: 'Rye', cursive;
-  font-size: 2em;
-  color: var(--color-gold);
-  border-bottom: 2px solid var(--color-gold);
+  font-size: 2.2em;
+  color: var(--color-border);
+  border-bottom: 3px double var(--color-border);
+  background-color: rgba(255, 255, 255, 0.85);
 }
 
 main {
@@ -40,22 +44,31 @@ form {
   flex-direction: column;
   gap: 8px;
   margin-bottom: 15px;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 10px;
+  border: 2px solid var(--color-border);
 }
 
 input, select, button {
   padding: 8px;
   font-size: 1em;
-  border: 1px solid var(--color-gold);
-  background: #111;
+  border: 2px solid var(--color-border);
+  background: #fff8f0;
   color: var(--color-text);
   border-radius: 4px;
+  font-family: 'Playfair Display', serif;
 }
 
 button {
   cursor: pointer;
   background-color: var(--color-gold);
-  color: var(--color-bg);
+  color: var(--color-text);
   font-weight: bold;
+  box-shadow: 2px 2px 0 var(--color-border);
+}
+
+button:hover {
+  background-color: #e0c04a;
 }
 
 ul {
@@ -68,9 +81,10 @@ ul {
   justify-content: space-between;
   align-items: center;
   padding: 6px;
-  border-bottom: 1px solid var(--color-gold);
+  border-bottom: 1px dashed var(--color-border);
   transition: transform 0.3s ease, opacity 0.3s ease;
   overflow: hidden;
+  background: rgba(255, 255, 255, 0.85);
 }
 
 .item.slide-out {
@@ -97,11 +111,12 @@ ul {
 
 .cantidad-control button {
   background: var(--color-gold);
-  border: none;
+  border: 2px solid var(--color-border);
   padding: 2px 6px;
   cursor: pointer;
   font-weight: bold;
   font-size: 1.2em;
+  box-shadow: 1px 1px 0 var(--color-border);
 }
 
 .precio {
@@ -112,7 +127,7 @@ ul {
   margin-top: 10px;
   font-weight: bold;
   font-size: 1.4em;
-  color: var(--color-gold);
+  color: var(--color-border);
   text-align: right;
 }
 
@@ -123,15 +138,15 @@ ul {
   color: var(--color-text);
 }
 
-/* Etiqueta flotante vintage inspirada en la imagen */
+/* Etiqueta flotante vintage */
 .vintage-tag {
   position: fixed;
-  bottom: 15px;
+  bottom: 70px; /* subimos para no tapar el dock */
   right: 15px;
-  background: var(--color-vintage-bg);
-  color: var(--color-vintage-border);
+  background: var(--color-bg);
+  color: var(--color-border);
   padding: 15px 20px;
-  border: 3px solid var(--color-vintage-border);
+  border: 3px solid var(--color-border);
   border-radius: 12px;
   font-family: 'Rye', cursive;
   font-size: 1.4em;
@@ -145,15 +160,15 @@ ul {
   display: block;
   font-size: 0.6em;
   letter-spacing: 1px;
-  border-bottom: 2px solid var(--color-vintage-border);
+  border-bottom: 2px solid var(--color-border);
   margin-bottom: 5px;
   padding-bottom: 3px;
 }
 
 .vintage-tag.negative {
   background: #f5d6d6;
-  border-color: #a33;
-  color: #a33;
+  border-color: var(--color-danger);
+  color: var(--color-danger);
 }
 
 .dock {
@@ -161,28 +176,29 @@ ul {
   bottom: 0;
   left: 0;
   width: 100%;
-  background: #111;
+  background: rgba(255, 255, 255, 0.85);
   display: flex;
   justify-content: space-around;
-  border-top: 2px solid var(--color-gold);
+  border-top: 3px double var(--color-border);
 }
 
 .dock button {
   background: none;
   border: none;
   padding: 10px;
-  color: var(--color-gold);
+  color: var(--color-border);
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: 0.8em;
+  font-family: 'Rye', cursive;
 }
 
 .dock svg {
   width: 24px;
   height: 24px;
   margin-bottom: 4px;
-  fill: var(--color-gold);
+  fill: var(--color-border);
 }
 
 /* Modal */
@@ -200,8 +216,8 @@ ul {
 }
 
 .modal-content {
-  background: #111;
-  border: 2px solid var(--color-gold);
+  background: var(--color-bg);
+  border: 3px solid var(--color-border);
   padding: 20px;
   border-radius: 8px;
   width: 90%;
@@ -211,7 +227,7 @@ ul {
 
 .modal-content h2 {
   font-family: 'Rye', cursive;
-  color: var(--color-gold);
+  color: var(--color-border);
   margin-bottom: 15px;
 }
 
@@ -223,16 +239,18 @@ ul {
 
 .modal-content td {
   padding: 6px;
-  border-bottom: 1px solid var(--color-gold);
+  border-bottom: 1px dashed var(--color-border);
 }
 
 .close-btn {
   background: var(--color-gold);
-  color: var(--color-bg);
-  border: none;
+  color: var(--color-text);
+  border: 2px solid var(--color-border);
   padding: 8px 12px;
   cursor: pointer;
   font-weight: bold;
+  font-family: 'Playfair Display', serif;
+  box-shadow: 1px 1px 0 var(--color-border);
 }
 
 @keyframes fadeIn {
@@ -350,7 +368,7 @@ function actualizarTotales() {
   if (presupuesto > 0) {
     let restante = presupuesto - total;
     presupuestoRestanteEl.textContent = `Presupuesto restante: €${restante.toFixed(2)}`;
-    presupuestoRestanteEl.style.color = restante < 0 ? 'red' : 'var(--color-text)';
+    presupuestoRestanteEl.style.color = restante < 0 ? 'var(--color-danger)' : 'var(--color-text)';
 
     vintageTag.style.display = 'block';
     vintageValue.textContent = `€${restante.toFixed(2)}`;
