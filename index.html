@@ -3,223 +3,158 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Le Cellier</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Rye&display=swap" rel="stylesheet">
+<title>Le Cellier - Lista de Compras</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --color-bg: #f8f1e4;
-  --color-text: #3e2f1c;
-  --color-border: #5a4634;
-  --color-gold: #c9a23f;
-  --color-danger: #a33;
+  --color-bg: #f9f9f9;
+  --color-card: #ffffff;
+  --color-text: #333333;
+  --color-primary: #4a90e2;
+  --color-danger: #e94e3f;
+  --color-success: #4caf50;
+  --shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
+
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: 'Playfair Display', serif;
-  background: url('https://www.transparenttextures.com/patterns/wood-pattern.png') repeat;
-  background-size: cover;
+  font-family: 'Inter', sans-serif;
+  background: var(--color-bg);
   color: var(--color-text);
-  border: 12px double var(--color-border);
-  padding: 5px;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  box-sizing: border-box;
 }
 
 /* HEADER */
 header {
   text-align: center;
-  padding: 25px 10px;
-  font-family: 'Rye', cursive;
-  font-size: 2.5em;
-  color: var(--color-border);
-  background-color: rgba(255, 255, 255, 0.9);
-  border: 4px double var(--color-border);
-  margin-bottom: 10px;
-  position: relative;
+  padding: 20px;
+  font-size: 2em;
+  font-weight: 600;
+  color: var(--color-primary);
 }
 
-header svg {
-  width: 100px;
-  height: auto;
-  fill: var(--color-gold);
-}
-
-.header-ornament-top,
-.header-ornament-bottom {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.header-ornament-top { top: -25px; }
-.header-ornament-bottom { bottom: -25px; }
-
-/* SEPARADORES */
-.separator {
-  text-align: center;
-  font-family: 'Rye', cursive;
-  font-size: 1.2em;
-  color: var(--color-border);
-  margin: 15px 0;
-}
-
-.separator svg {
-  width: 140px;
-  fill: var(--color-gold);
-}
-
-/* FORMULARIO */
+/* FORM */
 form {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 15px;
-  background: rgba(255, 255, 255, 0.9);
+  flex-wrap: wrap;
+  gap: 10px;
+  background: var(--color-card);
+  padding: 15px;
+  margin: 0 15px 15px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+form input, form select, form button {
   padding: 10px;
-  border: 3px double var(--color-border);
-}
-
-input, select, button {
-  padding: 8px;
   font-size: 1em;
-  border: 2px solid var(--color-border);
-  background: #fff8f0;
-  color: var(--color-text);
-  border-radius: 4px;
-  font-family: 'Playfair Display', serif;
+  border: 1px solid #ddd;
+  border-radius: 6px;
 }
 
-button {
+form input, form select { flex: 1; min-width: 120px; }
+
+form button {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  font-weight: 600;
   cursor: pointer;
-  background-color: var(--color-gold);
-  color: var(--color-text);
-  font-weight: bold;
-  box-shadow: 2px 2px 0 var(--color-border);
+  transition: background 0.2s;
 }
 
-button:hover {
-  background-color: #e0c04a;
-}
+form button:hover { background: #357ab8; }
 
 /* LISTA */
 ul {
   list-style: none;
-  padding: 0;
+  padding: 0 15px;
+  margin: 0;
 }
 
 .item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px;
-  border-bottom: 1px dashed var(--color-border);
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.9);
-}
-
-.item.slide-out {
-  height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  opacity: 0;
+  background: var(--color-card);
+  margin-bottom: 10px;
+  padding: 12px 15px;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  transition: all 0.3s;
 }
 
 .item.comprado {
   opacity: 0.5;
 }
 
-.item .acciones button {
-  margin-left: 4px;
-}
-
 .cantidad-control {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 1.2em;
+  gap: 5px;
 }
 
 .cantidad-control button {
-  background: var(--color-gold);
-  border: 2px solid var(--color-border);
-  padding: 2px 6px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 5px;
   cursor: pointer;
-  font-weight: bold;
-  font-size: 1.2em;
-  box-shadow: 1px 1px 0 var(--color-border);
 }
 
-.precio {
-  font-size: 1.3em;
+.cantidad-control button:hover { background: #357ab8; }
+
+.acciones button {
+  background: transparent;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  color: var(--color-danger);
 }
 
 /* TOTAL Y PRESUPUESTO */
-.total-compra {
-  margin-top: 15px;
-  font-weight: bold;
-  font-size: 1.4em;
-  color: var(--color-border);
+.total-compra, .presupuesto-restante {
   text-align: center;
-}
-
-.presupuesto-restante {
-  margin: 10px auto;
-  padding: 10px;
-  text-align: center;
+  margin: 15px;
+  font-weight: 600;
   font-size: 1.2em;
-  border: 3px double var(--color-border);
-  background: rgba(255, 255, 255, 0.9);
-  width: fit-content;
-  min-width: 200px;
-  position: relative;
-}
-
-.presupuesto-restante svg {
-  width: 80px;
-  fill: var(--color-gold);
-  position: absolute;
-  top: -25px;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .presupuesto-restante.negative {
-  background: #f5d6d6;
-  border-color: var(--color-danger);
   color: var(--color-danger);
+  animation: alerta 1s infinite;
+}
+
+@keyframes alerta {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 
 /* DOCK */
 .dock {
   position: fixed;
   bottom: 0;
-  left: 0;
   width: 100%;
-  background: rgba(255, 255, 255, 0.9);
   display: flex;
   justify-content: space-around;
-  border-top: 4px double var(--color-border);
+  background: var(--color-card);
+  padding: 10px 0;
+  box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
 }
 
 .dock button {
-  background: none;
+  background: var(--color-primary);
+  color: #fff;
   border: none;
-  padding: 10px;
-  color: var(--color-border);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 0.8em;
-  font-family: 'Rye', cursive;
-}
-
-.dock svg {
-  width: 24px;
-  height: 24px;
-  margin-bottom: 4px;
-  fill: var(--color-border);
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
 }
 
 /* MODAL */
@@ -229,76 +164,50 @@ ul {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.7);
   display: none;
   justify-content: center;
   align-items: center;
-  animation: fadeIn 0.3s;
+  background: rgba(0,0,0,0.5);
 }
 
 .modal-content {
-  background: var(--color-bg);
-  border: 3px double var(--color-border);
+  background: var(--color-card);
   padding: 20px;
-  border-radius: 8px;
-  width: 90%;
+  border-radius: 10px;
   max-width: 400px;
+  width: 90%;
   text-align: center;
-}
-
-.modal-content h2 {
-  font-family: 'Rye', cursive;
-  color: var(--color-border);
-  margin-bottom: 15px;
 }
 
 .modal-content table {
   width: 100%;
-  border-collapse: collapse;
   margin-bottom: 15px;
+  border-collapse: collapse;
 }
 
 .modal-content td {
-  padding: 6px;
-  border-bottom: 1px dashed var(--color-border);
+  padding: 6px 4px;
 }
 
 .close-btn {
-  background: var(--color-gold);
-  color: var(--color-text);
-  border: 2px solid var(--color-border);
   padding: 8px 12px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: bold;
-  font-family: 'Playfair Display', serif;
-  box-shadow: 1px 1px 0 var(--color-border);
-}
-
-@keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
+  font-weight: 600;
 }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-ornament-top">
-    <svg viewBox="0 0 100 20"><path d="M0,10 Q25,0 50,10 T100,10" /></svg>
-  </div>
-  Le Cellier
-  <div class="header-ornament-bottom">
-    <svg viewBox="0 0 100 20"><path d="M0,10 Q25,20 50,10 T100,10" /></svg>
-  </div>
-</header>
+<header>Le Cellier</header>
 
 <main>
-  <div class="separator">
-    <svg viewBox="0 0 100 20"><path d="M0,10 Q25,0 50,10 T100,10" /></svg>
-  </div>
   <form id="form-producto">
-    <input type="text" id="nombre" placeholder="Nombre del producto" required>
-    <input type="number" id="precio" placeholder="Precio unitario (€)" step="0.01" required>
+    <input type="text" id="nombre" placeholder="Producto" required>
+    <input type="number" id="precio" placeholder="Precio (€)" step="0.01" required>
     <input type="number" id="cantidad" placeholder="Cantidad" value="1" min="1" required>
     <select id="categoria">
       <option value="Vegetales">Vegetales</option>
@@ -317,25 +226,14 @@ ul {
   <ul id="lista"></ul>
 
   <div class="total-compra" id="total-compra">Total: €0.00</div>
-
-  <div id="presupuesto-restante" class="presupuesto-restante" style="display:none;">
-    <svg viewBox="0 0 100 20"><path d="M0,10 Q25,0 50,10 T100,10" /></svg>
-    <span id="presupuesto-texto">Presupuesto restante: €0.00</span>
-  </div>
+  <div id="presupuesto-restante" class="presupuesto-restante"></div>
 </main>
 
 <div class="dock">
-  <button id="btn-resumen">
-    <svg viewBox="0 0 24 24"><path d="M4 4h16v4H4zM4 10h10v4H4zM4 16h7v4H4z"/></svg>
-    Resumen
-  </button>
-  <button id="btn-presupuesto">
-    <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
-    Presupuesto
-  </button>
+  <button id="btn-resumen">Resumen</button>
+  <button id="btn-presupuesto">Presupuesto</button>
 </div>
 
-<!-- Modal Resumen -->
 <div class="modal" id="modal-resumen">
   <div class="modal-content">
     <h2>Resumen</h2>
@@ -354,36 +252,33 @@ const modal = document.getElementById('modal-resumen');
 const tablaResumen = document.getElementById('tabla-resumen');
 const totalCompraEl = document.getElementById('total-compra');
 const presupuestoRestanteEl = document.getElementById('presupuesto-restante');
-const presupuestoTexto = document.getElementById('presupuesto-texto');
 
 function guardarLista() {
   localStorage.setItem('lista', JSON.stringify(lista));
 }
-
 function guardarPresupuesto() {
   localStorage.setItem('presupuesto', presupuesto);
 }
 
 function renderLista() {
   listaEl.innerHTML = '';
-  lista.sort((a, b) => a.comprado - b.comprado);
-
-  lista.forEach((item, index) => {
+  lista.sort((a,b) => a.comprado - b.comprado);
+  lista.forEach((item, i) => {
     const subtotal = item.precio * item.cantidad;
     const li = document.createElement('li');
     li.className = 'item' + (item.comprado ? ' comprado' : '');
     li.innerHTML = `
-      <span onclick="toggleComprado(${index})" style="flex:1;">
-        ${item.nombre} €${item.precio.toFixed(2)} 
+      <span onclick="toggleComprado(${i})" style="flex:1; cursor:pointer;">
+        ${item.nombre} €${item.precio.toFixed(2)}
         <span class="cantidad-control">
-          <button onclick="cambiarCantidad(${index}, -1); event.stopPropagation();">-</button>
+          <button onclick="cambiarCantidad(${i}, -1); event.stopPropagation();">-</button>
           ${item.cantidad}
-          <button onclick="cambiarCantidad(${index}, 1); event.stopPropagation();">+</button>
-        </span> 
+          <button onclick="cambiarCantidad(${i}, 1); event.stopPropagation();">+</button>
+        </span>
         + €${subtotal.toFixed(2)}
       </span>
       <div class="acciones">
-        <button onclick="eliminar(${index}); event.stopPropagation();">🗑</button>
+        <button onclick="eliminar(${i}); event.stopPropagation();">🗑</button>
       </div>
     `;
     listaEl.appendChild(li);
@@ -392,83 +287,72 @@ function renderLista() {
 }
 
 function actualizarTotales() {
-  let total = lista.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+  let total = lista.reduce((acc, item) => acc + item.precio*item.cantidad, 0);
   totalCompraEl.textContent = `Total: €${total.toFixed(2)}`;
 
-  if (presupuesto > 0) {
-    let restante = presupuesto - total;
-    presupuestoTexto.textContent = `Presupuesto restante: €${restante.toFixed(2)}`;
-    presupuestoRestanteEl.classList.toggle('negative', restante < 0);
-    presupuestoRestanteEl.style.display = 'block';
-  } else {
-    presupuestoRestanteEl.style.display = 'none';
+  if(presupuesto>0){
+    let restante = presupuesto-total;
+    presupuestoRestanteEl.textContent = `Presupuesto restante: €${restante.toFixed(2)}`;
+    presupuestoRestanteEl.classList.toggle('negative', restante<0);
   }
 }
 
-function toggleComprado(i) {
-  const li = listaEl.children[i];
-  li.classList.add('slide-out');
-  setTimeout(() => {
-    lista[i].comprado = !lista[i].comprado;
-    guardarLista();
-    renderLista();
-  }, 300);
+function toggleComprado(i){
+  lista[i].comprado = !lista[i].comprado;
+  guardarLista();
+  renderLista();
 }
 
-function cambiarCantidad(i, delta) {
+function cambiarCantidad(i, delta){
   lista[i].cantidad += delta;
-  if (lista[i].cantidad < 1) lista[i].cantidad = 1;
+  if(lista[i].cantidad<1) lista[i].cantidad=1;
   guardarLista();
   renderLista();
 }
 
-function eliminar(i) {
-  lista.splice(i, 1);
+function eliminar(i){
+  lista.splice(i,1);
   guardarLista();
   renderLista();
 }
 
-form.addEventListener('submit', e => {
+form.addEventListener('submit', e=>{
   e.preventDefault();
   const nombre = document.getElementById('nombre').value;
   const precio = parseFloat(document.getElementById('precio').value);
   const cantidad = parseInt(document.getElementById('cantidad').value);
   const categoria = document.getElementById('categoria').value;
-  lista.push({ nombre, precio, cantidad, categoria, comprado: false });
+  lista.push({nombre, precio, cantidad, categoria, comprado:false});
   guardarLista();
   renderLista();
   form.reset();
   document.getElementById('cantidad').value = 1;
+  // mantiene categoría seleccionada
 });
 
-function mostrarResumen() {
-  let resumen = {};
-  let total = 0;
-  lista.forEach(item => {
-    if (!resumen[item.categoria]) resumen[item.categoria] = 0;
-    resumen[item.categoria] += item.precio * item.cantidad;
-    total += item.precio * item.cantidad;
+function mostrarResumen(){
+  let resumen={};
+  let total=0;
+  lista.forEach(item=>{
+    if(!resumen[item.categoria]) resumen[item.categoria]=0;
+    resumen[item.categoria]+=item.precio*item.cantidad;
+    total+=item.precio*item.cantidad;
   });
-
-  tablaResumen.innerHTML = '';
-  for (let cat in resumen) {
-    let row = `<tr><td>${cat}</td><td>€${resumen[cat].toFixed(2)}</td></tr>`;
-    tablaResumen.innerHTML += row;
+  tablaResumen.innerHTML='';
+  for(let cat in resumen){
+    tablaResumen.innerHTML+=`<tr><td>${cat}</td><td>€${resumen[cat].toFixed(2)}</td></tr>`;
   }
-  tablaResumen.innerHTML += `<tr><td><strong>Total</strong></td><td><strong>€${total.toFixed(2)}</strong></td></tr>`;
-
-  modal.style.display = 'flex';
+  tablaResumen.innerHTML+=`<tr><td><strong>Total</strong></td><td><strong>€${total.toFixed(2)}</strong></td></tr>`;
+  modal.style.display='flex';
 }
 
 document.getElementById('btn-resumen').addEventListener('click', mostrarResumen);
-document.getElementById('cerrar-modal').addEventListener('click', () => {
-  modal.style.display = 'none';
-});
+document.getElementById('cerrar-modal').addEventListener('click', ()=>{modal.style.display='none';});
 
-document.getElementById('btn-presupuesto').addEventListener('click', () => {
-  let nuevoPresupuesto = prompt('Introduce tu presupuesto (€):', presupuesto || '');
-  if (nuevoPresupuesto !== null && !isNaN(parseFloat(nuevoPresupuesto))) {
-    presupuesto = parseFloat(nuevoPresupuesto);
+document.getElementById('btn-presupuesto').addEventListener('click', ()=>{
+  let nuevoPresupuesto = prompt('Introduce tu presupuesto (€):', presupuesto||'');
+  if(nuevoPresupuesto!==null && !isNaN(parseFloat(nuevoPresupuesto))){
+    presupuesto=parseFloat(nuevoPresupuesto);
     guardarPresupuesto();
     actualizarTotales();
   }
