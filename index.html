@@ -30,7 +30,7 @@ header {
 
 main {
   padding: 10px;
-  padding-bottom: 90px;
+  padding-bottom: 100px;
 }
 
 form {
@@ -67,7 +67,15 @@ ul {
   align-items: center;
   padding: 6px;
   border-bottom: 1px solid var(--color-gold);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  overflow: hidden;
+}
+
+.item.slide-out {
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0;
 }
 
 .item.comprado {
@@ -78,19 +86,53 @@ ul {
   margin-left: 4px;
 }
 
+.cantidad-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cantidad-control button {
+  background: var(--color-gold);
+  border: none;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.precio {
+  font-size: 1.1em;
+}
+
 .total-compra {
   margin-top: 10px;
   font-weight: bold;
-  font-size: 1.1em;
+  font-size: 1.2em;
   color: var(--color-gold);
   text-align: right;
 }
 
 .presupuesto-restante {
   text-align: right;
-  font-size: 0.9em;
+  font-size: 1em;
   margin-top: 4px;
   color: var(--color-text);
+}
+
+/* Etiqueta flotante vintage */
+.vintage-tag {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: var(--color-gold);
+  color: var(--color-bg);
+  padding: 10px 15px;
+  border-radius: 50% 20% / 10% 40%;
+  font-family: 'Rye', cursive;
+  font-size: 1.2em;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  z-index: 1000;
 }
 
 .dock {
@@ -182,6 +224,8 @@ ul {
 
 <header>Le Cellier</header>
 
+<div id="vintage-tag" class="vintage-tag" style="display:none;"></div>
+
 <main>
   <form id="form-producto">
     <input type="text" id="nombre" placeholder="Nombre del producto" required>
@@ -208,10 +252,6 @@ ul {
 </main>
 
 <div class="dock">
-  <button id="btn-lista">
-    <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-    Lista
-  </button>
   <button id="btn-resumen">
     <svg viewBox="0 0 24 24"><path d="M4 4h16v4H4zM4 10h10v4H4zM4 16h7v4H4z"/></svg>
     Resumen
@@ -241,6 +281,7 @@ const modal = document.getElementById('modal-resumen');
 const tablaResumen = document.getElementById('tabla-resumen');
 const totalCompraEl = document.getElementById('total-compra');
 const presupuestoRestanteEl = document.getElementById('presupuesto-restante');
+const vintageTag = document.getElementById('vintage-tag');
 
 function guardarLista() {
   localStorage.setItem('lista', JSON.stringify(lista));
@@ -252,7 +293,6 @@ function guardarPresupuesto() {
 
 function renderLista() {
   listaEl.innerHTML = '';
-  // Orden: no comprados primero, luego comprados
   lista.sort((a, b) => a.comprado - b.comprado);
 
   lista.forEach((item, index) => {
@@ -260,9 +300,17 @@ function renderLista() {
     const li = document.createElement('li');
     li.className = 'item' + (item.comprado ? ' comprado' : '');
     li.innerHTML = `
-      <span onclick="toggleComprado(${index})">${item.nombre}  €${item.precio.toFixed(2)} - ${item.cantidad} + €${subtotal.toFixed(2)}</span>
+      <span onclick="toggleComprado(${index})" style="flex:1;">
+        ${item.nombre} €${item.precio.toFixed(2)} 
+        <span class="cantidad-control">
+          <button onclick="cambiarCantidad(${index}, -1); event.stopPropagation();">-</button>
+          ${item.cantidad}
+          <button onclick="cambiarCantidad(${index}, 1); event.stopPropagation();">+</button>
+        </span> 
+        + €${subtotal.toFixed(2)}
+      </span>
       <div class="acciones">
-        <button onclick="eliminar(${index})">🗑</button>
+        <button onclick="eliminar(${index}); event.stopPropagation();">🗑</button>
       </div>
     `;
     listaEl.appendChild(li);
@@ -278,13 +326,27 @@ function actualizarTotales() {
     let restante = presupuesto - total;
     presupuestoRestanteEl.textContent = `Presupuesto restante: €${restante.toFixed(2)}`;
     presupuestoRestanteEl.style.color = restante < 0 ? 'red' : 'var(--color-text)';
+    vintageTag.style.display = 'block';
+    vintageTag.textContent = `€${restante.toFixed(2)}`;
   } else {
     presupuestoRestanteEl.textContent = '';
+    vintageTag.style.display = 'none';
   }
 }
 
 function toggleComprado(i) {
-  lista[i].comprado = !lista[i].comprado;
+  const li = listaEl.children[i];
+  li.classList.add('slide-out');
+  setTimeout(() => {
+    lista[i].comprado = !lista[i].comprado;
+    guardarLista();
+    renderLista();
+  }, 300);
+}
+
+function cambiarCantidad(i, delta) {
+  lista[i].cantidad += delta;
+  if (lista[i].cantidad < 1) lista[i].cantidad = 1;
   guardarLista();
   renderLista();
 }
@@ -346,4 +408,3 @@ renderLista();
 
 </body>
 </html>
-
