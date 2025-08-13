@@ -1,315 +1,331 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Le Cellier</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#4a90e2">
-<link rel="icon" href="icons/icon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest"></script>
-<style>
-:root {
-  --color-bg: #f4f6f8;
-  --color-card: #ffffff;
-  --color-text: #333;
-  --color-primary: #4a90e2;
-  --color-danger: #e94e3f;
-  --shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Le Cellier</title>
 
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background: var(--color-bg);
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0a84ff" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-/* HEADER */
-header {
-  text-align: center;
-  padding: 15px;
-  font-size: 1.5em;
-  font-weight: 600;
-  color: var(--color-primary);
-  background: var(--color-card);
-  box-shadow: var(--shadow);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
+  <!-- Fuente del sistema para iOS-like sin violar licencias -->
+  <style>
+    :root {
+      --bg: #f2f2f7;               /* iOS grouped backgrounds */
+      --card: #ffffff;
+      --text: #111111;
+      --secondary: #6b7280;
+      --tint: #0a84ff;             /* iOS blue */
+      --danger: #ff3b30;           /* iOS red */
+      --success: #34c759;          /* iOS green */
+      --shadow: 0 8px 24px rgba(0,0,0,0.08);
+      --radius: 16px;
+    }
 
-/* FORM */
-form {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr auto;
-  gap: 8px;
-  padding: 10px;
-  background: var(--color-card);
-  box-shadow: var(--shadow);
-}
-form input, form select, form button {
-  padding: 8px;
-  font-size: 1em;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-}
-form button {
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-}
-form button:hover { background: #357ab8; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: var(--bg);
+      color: var(--text);
+    }
 
-/* LISTA */
-ul {
-  list-style: none;
-  padding: 10px;
-  margin: 0;
-}
-.item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--color-card);
-  padding: 12px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-  animation: fadeIn 0.3s ease;
-}
-.item.comprado { opacity: 0.5; }
-@keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
+    /* Safe areas (iPhone notch) */
+    .safe { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 
-.cantidad-control { display: flex; align-items: center; gap: 5px; }
-.cantidad-control button {
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  padding: 3px 7px;
-  border-radius: 5px;
-  cursor: pointer;
-}
+    /* NAVBAR estilo iOS con gran título y vidrio esmerilado */
+    .navbar {
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      background: rgba(255,255,255,0.75);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .navbar-inner { padding: calc(10px + env(safe-area-inset-top)) 16px 10px; }
+    .title-large { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+    .subtitle { font-size: 13px; color: var(--secondary); margin-top: 2px; }
 
-.acciones button {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--color-danger);
-}
+    /* FORM agrupado estilo iOS */
+    .grouped {
+      margin: 12px 12px 0; background: var(--card); border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    form.grouped { display: grid; grid-template-columns: 1.4fr 1fr 0.9fr 1fr auto; gap: 8px; padding: 12px; }
+    form input, form select, form button {
+      height: 40px; padding: 0 12px; font-size: 16px; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px;
+      background: #f9f9fb;
+    }
+    form button {
+      background: var(--tint); color: #fff; border: none; font-weight: 600; cursor: pointer;
+    }
+    form button:active { filter: brightness(0.95); }
 
-/* TOTAL Y PRESUPUESTO */
-.total-compra, .presupuesto-restante {
-  text-align: center;
-  padding: 10px;
-  font-weight: 600;
-  font-size: 1.2em;
-}
-.presupuesto-restante.negative {
-  color: var(--color-danger);
-  animation: alerta 1s infinite;
-}
-@keyframes alerta { 0%,100% {opacity:1;} 50% {opacity:0.5;} }
+    /* SEGMENTED (opcional para futuros filtros) */
+    .segmented { margin: 12px; display: inline-flex; background:#e9e9ee; border-radius: 12px; padding: 4px; }
+    .segmented button { border: 0; background: transparent; padding: 6px 10px; border-radius: 8px; font-weight: 600; color:#3a3a3c; }
+    .segmented button.active { background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.08); color: var(--tint); }
 
-/* DOCK */
-.dock {
-  position: sticky;
-  bottom: 0;
-  display: flex;
-  justify-content: space-around;
-  background: var(--color-card);
-  padding: 8px 0;
-  box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
-}
-.dock button {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: none;
-  border: none;
-  font-size: 0.8em;
-  cursor: pointer;
-  color: var(--color-primary);
-}
+    /* LISTA estilo iOS (cards) */
+    ul { list-style: none; padding: 12px; margin: 0; }
+    .cell {
+      position: relative; overflow: hidden;
+      background: var(--card); border-radius: 14px; margin-bottom: 10px; box-shadow: var(--shadow);
+      will-change: transform;
+    }
+    .cell-content { display: flex; align-items: center; gap: 12px; padding: 12px; }
 
-/* MODAL */
-.modal {
-  position: fixed;
-  inset: 0;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0,0,0,0.5);
-}
-.modal-content {
-  background: var(--color-card);
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 400px;
-  width: 90%;
-  text-align: center;
-}
-.modal-content table {
-  width: 100%;
-  margin-bottom: 15px;
-}
-.close-btn {
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-</style>
+    .cell-title { font-weight: 600; }
+    .cell-meta { font-size: 13px; color: var(--secondary); }
+
+    .qty { display: inline-flex; align-items: center; gap: 6px; margin-left: 6px; }
+    .qty button {
+      height: 28px; min-width: 28px; padding: 0 10px; border-radius: 14px; border: none; cursor: pointer;
+      background: #e9f1ff; color: #0a84ff; font-weight: 700; font-size: 16px;
+    }
+
+    .subtotal { margin-left: auto; font-weight: 700; }
+    .comprado .cell-content { opacity: 0.5; }
+
+    /* Swipe actions (deslizar a la izquierda para borrar) */
+    .swipe-wrapper { position: relative; }
+    .actions {
+      position: absolute; inset: 0 0 0 auto; width: 88px; display: flex; justify-content: center; align-items: stretch;
+      background: var(--danger); color: #fff; text-align: center;
+    }
+    .actions button { flex: 1; border: none; background: transparent; color: #fff; font-weight: 700; cursor: pointer; }
+
+    /* Totales */
+    .stats { margin: 8px 12px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat { background: var(--card); border-radius: 14px; padding: 12px; box-shadow: var(--shadow); text-align: center; font-weight: 700; }
+    .negative { color: var(--danger); animation: blink 1s infinite; }
+    @keyframes blink { 50% { opacity: .6; } }
+
+    /* TAB BAR con blur */
+    .tabbar {
+      position: sticky; bottom: 0; z-index: 40; backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      background: rgba(255,255,255,0.85); border-top: 1px solid rgba(0,0,0,0.06);
+    }
+    .tabbar-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px env(safe-area-inset-right) calc(8px + env(safe-area-inset-bottom)) env(safe-area-inset-left); }
+    .tab-btn { display:flex; flex-direction:column; align-items:center; gap:4px; border:0; background:transparent; color:#0a84ff; font-size:12px; padding:6px 0; cursor:pointer; }
+
+    /* Modal iOS-like */
+    .modal { position: fixed; inset:0; display:none; justify-content:center; align-items:flex-end; background: rgba(0,0,0,0.25); }
+    .sheet { width:100%; max-width:600px; background: var(--card); border-top-left-radius: 16px; border-top-right-radius: 16px; box-shadow: var(--shadow); padding: 16px; }
+    .sheet h2 { margin: 0 0 10px; font-size: 18px; }
+    .sheet table { width:100%; border-collapse:collapse; }
+    .sheet td { padding: 8px 4px; }
+    .close { margin-top: 10px; width:100%; height:40px; border:0; border-radius:12px; background:#e9e9ee; font-weight:600; }
+
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce) {
+      .cell { transition: none !important; }
+      .negative { animation: none; }
+    }
+  </style>
 </head>
 <body>
+  <nav class="navbar safe">
+    <div class="navbar-inner">
+      <div class="title-large">Le Cellier</div>
+      <div class="subtitle">Lista de compras</div>
+    </div>
+  </nav>
 
-<header>Le Cellier</header>
+  <form id="form-producto" class="grouped safe" autocomplete="off">
+    <input id="nombre" type="text" placeholder="Producto" required aria-label="Nombre del producto" />
+    <input id="precio" type="number" step="0.01" inputmode="decimal" placeholder="Precio (€)" required aria-label="Precio unitario" />
+    <input id="cantidad" type="number" min="1" value="1" placeholder="Cant." required aria-label="Cantidad" />
+    <select id="categoria" aria-label="Categoría">
+      <option>Vegetales</option><option>Frutas</option><option>Víveres</option>
+      <option>Carnes</option><option>Cuidado Personal</option><option>Limpieza</option>
+      <option>Bebidas</option><option>Aperitivos y Dulces</option><option>Panadería</option>
+    </select>
+    <button type="submit" aria-label="Añadir">Añadir</button>
+  </form>
 
-<form id="form-producto">
-  <input type="text" id="nombre" placeholder="Producto" required>
-  <input type="number" id="precio" placeholder="Precio (€)" step="0.01" required>
-  <input type="number" id="cantidad" placeholder="Cant." value="1" min="1" required>
-  <select id="categoria">
-    <option value="Vegetales">Vegetales</option>
-    <option value="Frutas">Frutas</option>
-    <option value="Víveres">Víveres</option>
-    <option value="Carnes">Carnes</option>
-    <option value="Cuidado Personal">Cuidado Personal</option>
-    <option value="Limpieza">Limpieza</option>
-    <option value="Bebidas">Bebidas</option>
-    <option value="Aperitivos y Dulces">Aperitivos y Dulces</option>
-    <option value="Panadería">Panadería</option>
-  </select>
-  <button type="submit"><i data-lucide="plus"></i></button>
-</form>
+  <ul id="lista" class="safe"></ul>
 
-<ul id="lista"></ul>
-<div class="total-compra" id="total-compra">Total: €0.00</div>
-<div id="presupuesto-restante" class="presupuesto-restante"></div>
+  <section class="stats safe">
+    <div class="stat" id="total-compra">Total: €0.00</div>
+    <div class="stat" id="presupuesto-restante">Presupuesto: —</div>
+  </section>
 
-<div class="dock">
-  <button id="btn-resumen"><i data-lucide="list"></i> Resumen</button>
-  <button id="btn-presupuesto"><i data-lucide="wallet"></i> Presupuesto</button>
-</div>
-
-<div class="modal" id="modal-resumen">
-  <div class="modal-content">
-    <h2>Resumen</h2>
-    <table id="tabla-resumen"></table>
-    <button class="close-btn" id="cerrar-modal">Cerrar</button>
+  <div class="tabbar safe">
+    <div class="tabbar-inner">
+      <button id="btn-resumen" class="tab-btn" aria-haspopup="dialog"><span>Resumen</span></button>
+      <button id="btn-presupuesto" class="tab-btn"><span>Presupuesto</span></button>
+    </div>
   </div>
-</div>
 
-<script>
-lucide.createIcons();
+  <!-- Modal tipo sheet -->
+  <div id="modal-resumen" class="modal" role="dialog" aria-modal="true" aria-label="Resumen de la compra">
+    <div class="sheet safe">
+      <h2>Resumen</h2>
+      <table id="tabla-resumen"></table>
+      <button id="cerrar-modal" class="close">Cerrar</button>
+    </div>
+  </div>
 
-let lista = JSON.parse(localStorage.getItem('lista')) || [];
-let presupuesto = parseFloat(localStorage.getItem('presupuesto')) || 0;
+  <script>
+    // Estado
+    let lista = JSON.parse(localStorage.getItem('lista')) || [];
+    let presupuesto = parseFloat(localStorage.getItem('presupuesto')) || 0;
 
-const listaEl = document.getElementById('lista');
-const form = document.getElementById('form-producto');
-const modal = document.getElementById('modal-resumen');
-const tablaResumen = document.getElementById('tabla-resumen');
-const totalCompraEl = document.getElementById('total-compra');
-const presupuestoRestanteEl = document.getElementById('presupuesto-restante');
+    // Elementos
+    const listaEl = document.getElementById('lista');
+    const form = document.getElementById('form-producto');
+    const totalEl = document.getElementById('total-compra');
+    const presEl = document.getElementById('presupuesto-restante');
+    const modal = document.getElementById('modal-resumen');
+    const tabla = document.getElementById('tabla-resumen');
 
-function guardarLista() { localStorage.setItem('lista', JSON.stringify(lista)); }
-function guardarPresupuesto() { localStorage.setItem('presupuesto', presupuesto); }
+    // Persistencia
+    const guardarLista = () => localStorage.setItem('lista', JSON.stringify(lista));
+    const guardarPres = () => localStorage.setItem('presupuesto', presupuesto);
 
-function renderLista() {
-  listaEl.innerHTML = '';
-  lista.sort((a,b) => a.comprado - b.comprado);
-  lista.forEach((item, i) => {
-    const subtotal = item.precio * item.cantidad;
-    const li = document.createElement('li');
-    li.className = 'item' + (item.comprado ? ' comprado' : '');
-    li.innerHTML = `
-      <span onclick="toggleComprado(${i})" style="flex:1; cursor:pointer;">
-        ${item.nombre} €${item.precio.toFixed(2)}
-        <span class="cantidad-control">
-          <button onclick="cambiarCantidad(${i}, -1); event.stopPropagation();">-</button>
-          ${item.cantidad}
-          <button onclick="cambiarCantidad(${i}, 1); event.stopPropagation();">+</button>
-        </span>
-        + €${subtotal.toFixed(2)}
-      </span>
-      <div class="acciones">
-        <button onclick="eliminar(${i}); event.stopPropagation();"><i data-lucide="trash-2"></i></button>
-      </div>
-    `;
-    listaEl.appendChild(li);
-  });
-  lucide.createIcons();
-  actualizarTotales();
-}
+    // Render lista
+    function renderLista(){
+      listaEl.innerHTML = '';
+      // Ordenar: no comprados primero
+      lista.sort((a,b) => (a.comprado === b.comprado) ? 0 : a.comprado ? 1 : -1);
 
-function actualizarTotales() {
-  let total = lista.reduce((acc, item) => acc + item.precio*item.cantidad, 0);
-  totalCompraEl.textContent = `Total: €${total.toFixed(2)}`;
-  if(presupuesto>0){
-    let restante = presupuesto-total;
-    presupuestoRestanteEl.textContent = `Presupuesto restante: €${restante.toFixed(2)}`;
-    presupuestoRestanteEl.classList.toggle('negative', restante<0);
-  }
-}
+      lista.forEach((item, i) => {
+        const subtotal = item.precio * item.cantidad;
 
-function toggleComprado(i){ lista[i].comprado = !lista[i].comprado; guardarLista(); renderLista(); }
-function cambiarCantidad(i, delta){ lista[i].cantidad = Math.max(1, lista[i].cantidad+delta); guardarLista(); renderLista(); }
-function eliminar(i){ lista.splice(i,1); guardarLista(); renderLista(); }
+        // Wrapper para swipe
+        const wrapper = document.createElement('li');
+        wrapper.className = 'cell' + (item.comprado ? ' comprado' : '');
 
-form.addEventListener('submit', e=>{
-  e.preventDefault();
-  const nombre = document.getElementById('nombre').value;
-  const precio = parseFloat(document.getElementById('precio').value);
-  const cantidad = parseInt(document.getElementById('cantidad').value);
-  const categoria = document.getElementById('categoria').value;
-  lista.push({nombre, precio, cantidad, categoria, comprado:false});
-  guardarLista();
-  renderLista();
-  form.reset();
-  document.getElementById('cantidad').value = 1;
-});
+        const swipe = document.createElement('div');
+        swipe.className = 'swipe-wrapper';
+        swipe.style.transform = 'translateX(0)';
 
-document.getElementById('btn-resumen').addEventListener('click', ()=>{
-  let resumen={}, total=0;
-  lista.forEach(item=>{
-    if(!resumen[item.categoria]) resumen[item.categoria]=0;
-    resumen[item.categoria]+=item.precio*item.cantidad;
-    total+=item.precio*item.cantidad;
-  });
-  tablaResumen.innerHTML='';
-  for(let cat in resumen){
-    tablaResumen.innerHTML+=`<tr><td>${cat}</td><td>€${resumen[cat].toFixed(2)}</td></tr>`;
-  }
-  tablaResumen.innerHTML+=`<tr><td><strong>Total</strong></td><td><strong>€${total.toFixed(2)}</strong></td></tr>`;
-  modal.style.display='flex';
-});
+        const actions = document.createElement('div');
+        actions.className = 'actions';
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'Eliminar';
+        delBtn.addEventListener('click', (e)=>{ e.stopPropagation(); eliminar(i); });
+        actions.appendChild(delBtn);
 
-document.getElementById('cerrar-modal').addEventListener('click', ()=>{ modal.style.display='none'; });
+        const content = document.createElement('div');
+        content.className = 'cell-content';
+        content.setAttribute('role','button');
+        content.setAttribute('aria-pressed', String(!!item.comprado));
+        content.addEventListener('click', ()=>toggleComprado(i));
 
-document.getElementById('btn-presupuesto').addEventListener('click', ()=>{
-  let nuevo = prompt('Introduce tu presupuesto (€):', presupuesto||'');
-  if(nuevo!==null && !isNaN(parseFloat(nuevo))){
-    presupuesto=parseFloat(nuevo);
-    guardarPresupuesto();
-    actualizarTotales();
-  }
-});
+        content.innerHTML = `
+          <div>
+            <div class="cell-title">${item.nombre}</div>
+            <div class="cell-meta">€${item.precio.toFixed(2)} · ${item.categoria}
+              <span class="qty">
+                <button aria-label="Restar" onclick="event.stopPropagation(); cambiarCantidad(${i}, -1)">−</button>
+                ${item.cantidad}
+                <button aria-label="Sumar" onclick="event.stopPropagation(); cambiarCantidad(${i}, 1)">+</button>
+              </span>
+            </div>
+          </div>
+          <div class="subtotal">€${subtotal.toFixed(2)}</div>
+        `;
 
-renderLista();
+        swipe.appendChild(actions);
+        swipe.appendChild(content);
+        wrapper.appendChild(swipe);
+        listaEl.appendChild(wrapper);
 
-/* PWA Install */
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js');
-}
-</script>
+        // Gestos de swipe (simple)
+        let startX = 0, currentX = 0, open = false;
+        const maxLeft = -88; // ancho de actions
+
+        const onStart = (e)=>{ startX = (e.touches? e.touches[0].clientX : e.clientX); };
+        const onMove  = (e)=>{
+          currentX = (e.touches? e.touches[0].clientX : e.clientX);
+          let dx = currentX - startX;
+          if(open) dx -= 88; // base cuando está abierto
+          dx = Math.min(0, Math.max(maxLeft, dx));
+          swipe.style.transform = `translateX(${dx}px)`;
+        };
+        const onEnd = ()=>{
+          const matrix = new WebKitCSSMatrix(getComputedStyle(swipe).transform);
+          const dx = matrix.m41;
+          if(dx < maxLeft/2){ swipe.style.transform = `translateX(${maxLeft}px)`; open = true; }
+          else { swipe.style.transform = 'translateX(0)'; open = false; }
+        };
+
+        // Eventos táctiles y mouse
+        swipe.addEventListener('touchstart', onStart, {passive:true});
+        swipe.addEventListener('touchmove', onMove, {passive:true});
+        swipe.addEventListener('touchend', onEnd);
+        swipe.addEventListener('mousedown', (e)=>{ onStart(e); const move=(ev)=>onMove(ev); const up=()=>{ onEnd(); window.removeEventListener('mousemove',move); window.removeEventListener('mouseup',up); }; window.addEventListener('mousemove',move); window.addEventListener('mouseup',up); });
+      });
+
+      actualizarTotales();
+    }
+
+    function actualizarTotales(){
+      const total = lista.reduce((acc, it) => acc + it.precio * it.cantidad, 0);
+      totalEl.textContent = `Total: €${total.toFixed(2)}`;
+      if(presupuesto > 0){
+        const rest = presupuesto - total;
+        presEl.textContent = `Presupuesto restante: €${rest.toFixed(2)}`;
+        presEl.classList.toggle('negative', rest < 0);
+      } else {
+        presEl.textContent = 'Presupuesto: —';
+        presEl.classList.remove('negative');
+      }
+    }
+
+    // Acciones
+    function toggleComprado(i){ lista[i].comprado = !lista[i].comprado; guardarLista(); renderLista(); }
+    function cambiarCantidad(i, d){ lista[i].cantidad = Math.max(1, (parseInt(lista[i].cantidad)||1) + d); guardarLista(); renderLista(); }
+    function eliminar(i){ lista.splice(i,1); guardarLista(); renderLista(); }
+
+    // Form
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const nombre = document.getElementById('nombre').value.trim();
+      const precio = parseFloat(document.getElementById('precio').value);
+      const cantidad = parseInt(document.getElementById('cantidad').value);
+      const categoria = document.getElementById('categoria').value;
+      if(!nombre || isNaN(precio) || isNaN(cantidad)) return;
+      lista.push({ nombre, precio, cantidad, categoria, comprado:false });
+      guardarLista(); renderLista();
+      form.reset(); document.getElementById('cantidad').value = 1; // mantener UX
+    });
+
+    // Modal resumen
+    document.getElementById('btn-resumen').addEventListener('click', ()=>{
+      // Construir resumen por categoría
+      const resumen = {};
+      let total = 0;
+      lista.forEach(it => {
+        resumen[it.categoria] = (resumen[it.categoria]||0) + it.precio*it.cantidad;
+        total += it.precio*it.cantidad;
+      });
+      tabla.innerHTML = Object.keys(resumen).map(cat => `<tr><td>${cat}</td><td style="text-align:right">€${resumen[cat].toFixed(2)}</td></tr>`).join('')
+        + `<tr><td><strong>Total</strong></td><td style="text-align:right"><strong>€${total.toFixed(2)}</strong></td></tr>`;
+      modal.style.display = 'flex';
+    });
+    document.getElementById('cerrar-modal').addEventListener('click', ()=> modal.style.display='none');
+    modal.addEventListener('click', (e)=>{ if(e.target===modal) modal.style.display='none'; });
+
+    // Presupuesto
+    document.getElementById('btn-presupuesto').addEventListener('click', ()=>{
+      const nuevo = prompt('Introduce tu presupuesto (€):', presupuesto || '');
+      if(nuevo !== null && !isNaN(parseFloat(nuevo))){ presupuesto = parseFloat(nuevo); guardarPres(); actualizarTotales(); }
+    });
+
+    // Inicial
+    renderLista();
+
+    // Registrar Service Worker (PWA)
+    if('serviceWorker' in navigator){ navigator.serviceWorker.register('service-worker.js'); }
+  </script>
 </body>
 </html>
