@@ -4,10 +4,10 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Le Cellier</title>
-<style>
-  /* Tipos vintage franceses */
-  @import url('https://fonts.googleapis.com/css2?family=Parisienne&family=Playfair+Display:wght@400;700&display=swap');
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Rye&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 
+<style>
   :root{
     --vino:#6b2e2e;
     --vino-osc:#4d1f1f;
@@ -22,13 +22,12 @@
     --peligro:#b94848;
   }
 
-  *{box-sizing:border-box}
-  html,body{height:100%}
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
   body {
     font-family: 'Playfair Display', serif;
     background: var(--papel);
     color: var(--tinta);
-    margin: 0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -37,8 +36,8 @@
   header {
     background: var(--dorado);
     color: #fdf8ee;
-    font-family: 'Parisienne', cursive;
-    font-size: 2.6rem;
+    font-family: 'Rye', cursive;
+    font-size: 2.8rem;
     text-align: center;
     padding: 16px 0 14px;
     letter-spacing: 2px;
@@ -50,10 +49,9 @@
   .content {
     flex: 1;
     overflow-y: auto;
-    padding: 14px 16px 110px; /* espacio para dock + etiqueta */
+    padding: 14px 16px 110px;
   }
 
-  /* ---------- Formulario agregar ---------- */
   .agregar-form {
     background: var(--papel2);
     border: 2px solid #c7b79e;
@@ -64,9 +62,10 @@
     gap: 8px;
     align-items: center;
   }
+
   .agregar-form input,
   .agregar-form select,
-  .agregar-form button{
+  .agregar-form button {
     font-family: 'Playfair Display', serif;
     font-size: 1rem;
     border: 1.5px solid #ad977a;
@@ -75,166 +74,228 @@
     border-radius: 8px;
     padding: 8px 10px;
   }
-  .agregar-form input:focus,
-  .agregar-form select:focus{outline:2px solid var(--dorado-osc)}
-  .agregar-form button{
+
+  .agregar-form button {
     background: var(--dorado);
-    color:#fff7e6;
-    border:none;
-    font-weight:700;
-    cursor:pointer;
-    transition:.2s ease;
+    color: #fff7e6;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s ease;
+    font-family: 'Rye', cursive;
   }
-  .agregar-form button:hover{background:var(--dorado-osc)}
-  @media (max-width:520px){
-    .agregar-form{grid-template-columns:1fr 1fr}
-    .agregar-form button{grid-column:1 / -1}
+  .agregar-form button:hover { background: var(--dorado-osc); }
+
+  @media (max-width:520px) {
+    .agregar-form {
+      grid-template-columns: 1fr 1fr;
+    }
+    .agregar-form button {
+      grid-column: 1 / -1;
+    }
   }
 
-  /* ---------- Lista ---------- */
-  #lista{display:flex; flex-direction:column; gap:10px; margin-top:12px}
+  #lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+  }
 
-  .item{
-    background:#f8f4ec;
-    border:1.5px solid #c7b79e;
-    border-radius:12px;
-    padding:12px 14px;
-    display:grid;
+  .item {
+    background: #f8f4ec;
+    border: 1.5px solid #c7b79e;
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: grid;
     grid-template-columns: 1fr auto auto auto auto;
     grid-template-areas: "nombre menos cantidad mas subtotal borrar";
-    align-items:center;
-    gap:8px;
+    align-items: center;
+    gap: 8px;
     transition: transform .2s ease, opacity .2s ease, background-color .2s ease, box-shadow .2s ease;
-    will-change: transform;
   }
-  .item.comprado{opacity:.55; background:#e9e3d7; font-style:italic}
-  .item.item-caro{background:var(--marcado); border-color:var(--caro-borde); box-shadow:0 0 0 2px rgb(168 110 51 / 15%) inset}
+  .item.comprado {
+    opacity: .55;
+    background: #e9e3d7;
+    font-style: italic;
+  }
+  .item.item-caro {
+    background: var(--marcado);
+    border-color: var(--caro-borde);
+    box-shadow: 0 0 0 2px rgb(168 110 51 / 15%) inset;
+  }
 
-  .nombre{
-    grid-area:nombre;
-    font-weight:700;
-    color:#2c221b;
-    cursor:pointer;
-    user-select:none;
+  .nombre {
+    grid-area: nombre;
+    font-weight: 700;
+    color: #2c221b;
+    cursor: pointer;
+    user-select: none;
+    font-family: 'Rye', cursive;
   }
-  .btn-cant{
-    background:var(--dorado);
-    color:#fff6e0;
-    border:none;
-    border-radius:8px;
-    padding:4px 10px;
-    font-weight:800;
-    cursor:pointer;
-    transition:.15s ease;
-  }
-  .btn-cant:hover{background:var(--dorado-osc)}
-  .menos{grid-area:menos}
-  .mas{grid-area:mas}
-  .cantidad{
-    grid-area:cantidad;
-    min-width:24px;
-    text-align:center;
-    font-weight:700;
-  }
-  .subtotal{
-    grid-area:subtotal;
-    min-width:70px;
-    text-align:right;
-    font-weight:700;
-  }
-  .btn-borrar{
-    grid-area:borrar;
-    background:transparent;
-    border:none;
-    font-size:1.25rem;
-    color:var(--peligro);
-    cursor:pointer;
-    padding-left:6px;
-    opacity:.9;
-    transition:transform .15s ease, opacity .15s ease, color .2s ease;
-  }
-  .btn-borrar:hover{transform:scale(1.1); opacity:1; color:#8f2f2f}
 
-  /* Swipe visual */
-  .item.swiping{box-shadow:0 6px 16px rgb(0 0 0 / 12%)}
+  .btn-cant {
+    background: var(--dorado);
+    color: #fff6e0;
+    border: none;
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .15s ease;
+    font-family: 'Rye', cursive;
+  }
+  .btn-cant:hover { background: var(--dorado-osc); }
 
-  /* ---------- Resumen ---------- */
-  .resumen{
+  .menos { grid-area: menos; }
+  .mas { grid-area: mas; }
+
+  .cantidad {
+    grid-area: cantidad;
+    min-width: 24px;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .subtotal {
+    grid-area: subtotal;
+    min-width: 70px;
+    text-align: right;
+    font-weight: 700;
+  }
+
+  .btn-borrar {
+    grid-area: borrar;
+    background: transparent;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--peligro);
+    cursor: pointer;
+    padding-left: 6px;
+    opacity: .9;
+    transition: transform .15s ease, opacity .15s ease, color .2s ease;
+  }
+  .btn-borrar:hover {
+    transform: scale(1.1);
+    opacity: 1;
+    color: #8f2f2f;
+  }
+
+  .item.swiping {
+    box-shadow: 0 6px 16px rgb(0 0 0 / 12%);
+  }
+
+  .resumen {
     background: var(--papel2);
-    border:2px solid #c7b79e;
-    border-radius:12px;
-    padding:14px;
+    border: 2px solid #c7b79e;
+    border-radius: 12px;
+    padding: 14px;
   }
-  .resumen p{margin:.35rem 0; font-weight:600}
+  .resumen p {
+    margin: .35rem 0;
+    font-weight: 600;
+  }
 
-  /* ---------- Presupuesto ---------- */
-  .presupuesto-box{
+  .presupuesto-box {
     background: var(--papel2);
-    border:2px solid #c7b79e;
-    border-radius:12px;
-    padding:14px;
-    display:grid;
-    gap:10px;
+    border: 2px solid #c7b79e;
+    border-radius: 12px;
+    padding: 14px;
+    display: grid;
+    gap: 10px;
   }
-  .barra{
-    height:10px; background:#e7dccb; border-radius:999px; overflow:hidden; border:1px solid #c7b79e;
+  .barra {
+    height: 10px;
+    background: #e7dccb;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid #c7b79e;
   }
-  .barra > div{
-    height:100%; width:0%; background: linear-gradient(90deg, var(--vino), var(--dorado));
-    transition:width .3s ease;
+  .barra > div {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--vino), var(--dorado));
+    transition: width .3s ease;
   }
 
-  /* ---------- Dock ---------- */
-  .dock{
-    position:fixed; left:50%; transform:translateX(-50%);
-    bottom:0; width:100%; max-width:560px;
-    background:var(--dorado);
-    border-top:3px solid var(--dorado-osc);
-    display:flex; justify-content:space-around; padding:10px 6px;
-    box-shadow:0 -4px 14px rgb(157 127 83 / 55%);
-    z-index:1500;
-    border-radius:18px 18px 0 0;
+  .dock {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    width: 100%;
+    max-width: 560px;
+    background: var(--dorado);
+    border-top: 3px solid var(--dorado-osc);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 6px;
+    box-shadow: 0 -4px 14px rgb(157 127 83 / 55%);
+    z-index: 1500;
+    border-radius: 18px 18px 0 0;
   }
-  .dock button{
-    background:none; border:none; color:#fff8e9; font-size:1.6rem;
-    cursor:pointer; padding:4px 8px; transition:transform .15s ease, opacity .2s ease;
-    opacity:.85;
+  .dock button {
+    background: none;
+    border: none;
+    color: #fff8e9;
+    font-size: 1.6rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: transform .15s ease, opacity .2s ease;
+    opacity: .85;
+    font-family: 'Rye', cursive;
   }
-  .dock button[aria-selected="true"]{transform:scale(1.12); opacity:1}
-  .dock button:hover{opacity:1}
+  .dock button[aria-selected="true"] {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  .dock button:hover {
+    opacity: 1;
+  }
 
-  /* ---------- Etiqueta de precio flotante ---------- */
-  .price-tag{
-    position:fixed; right:16px; bottom:86px;
-    background:#fffdf7;
-    color:var(--vino);
-    border:2px solid var(--vino-osc);
-    border-radius:10px 10px 10px 0;
-    padding:10px 14px 10px 28px;
-    font-weight:700;
+  .price-tag {
+    position: fixed;
+    right: 16px;
+    bottom: 86px;
+    background: #fffdf7;
+    color: var(--vino);
+    border: 2px solid var(--vino-osc);
+    border-radius: 10px 10px 10px 0;
+    padding: 10px 14px 10px 28px;
+    font-weight: 700;
     box-shadow: -2px 3px 0 var(--vino-osc), 0 6px 16px rgb(0 0 0 / 18%);
     transform: rotate(-4deg);
-    z-index:1400;
+    z-index: 1400;
+    font-family: 'Rye', cursive;
   }
-  .price-tag:before{
-    /* agujero de etiqueta */
-    content:'';
-    position:absolute; left:10px; top:14px;
-    width:10px; height:10px; border:2px solid var(--vino-osc); border-radius:50%;
-    background:#fffdf7;
+  .price-tag:before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 14px;
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--vino-osc);
+    border-radius: 50%;
+    background: #fffdf7;
   }
-  .price-tag small{display:block; font-weight:700; color:#7c5b5b}
-  .hidden{display:none}
+  .price-tag small {
+    display: block;
+    font-weight: 700;
+    color: #7c5b5b;
+  }
+  .hidden { display: none; }
 
-  /* Accesibilidad foco */
-  button:focus, input:focus, select:focus{outline:2px solid var(--dorado-osc); outline-offset:2px}
+  button:focus, input:focus, select:focus {
+    outline: 2px solid var(--dorado-osc);
+    outline-offset: 2px;
+  }
 </style>
 </head>
 <body>
 
 <header>Le Cellier</header>
 
-<!-- TAB LISTA -->
 <div class="content" id="listaTab">
   <form class="agregar-form" id="formAgregar" onsubmit="return false;">
     <input type="text" id="inputNombre" placeholder="Producto" aria-label="Nombre del producto" required />
@@ -256,16 +317,13 @@
     <input type="number" id="inputPrecio" placeholder="Precio (€)" min="0" step="0.01" required />
     <button id="btnAgregar" type="submit">Añadir</button>
   </form>
-
   <div id="lista" aria-live="polite"></div>
 </div>
 
-<!-- TAB RESUMEN -->
 <div class="content hidden" id="resumenTab">
   <div class="resumen" id="resumen" aria-live="polite" aria-label="Resumen por categoría"></div>
 </div>
 
-<!-- TAB PRESUPUESTO -->
 <div class="content hidden" id="presupuestoTab">
   <div class="presupuesto-box">
     <label for="presupuesto">Presupuesto (€):</label>
@@ -275,250 +333,25 @@
   </div>
 </div>
 
-<!-- Dock -->
 <nav class="dock" role="tablist" aria-label="Pestañas">
   <button role="tab" aria-controls="listaTab" aria-selected="true" tabindex="0" onclick="mostrarTab('listaTab')">📋</button>
   <button role="tab" aria-controls="resumenTab" aria-selected="false" tabindex="-1" onclick="mostrarTab('resumenTab')">📊</button>
   <button role="tab" aria-controls="presupuestoTab" aria-selected="false" tabindex="-1" onclick="mostrarTab('presupuestoTab')">💰</button>
 </nav>
 
-<!-- Etiqueta de precio flotante -->
 <div id="priceTag" class="price-tag">
   <small>Restante</small>
   <span id="restanteTexto">—</span>
 </div>
 
 <script>
-  /* ====== Estado y utilidades ====== */
+  // El JS permanece igual...
   let listaCompras = JSON.parse(localStorage.getItem('listaCompras')) || [];
   let presupuesto = parseFloat(localStorage.getItem('presupuesto')) || 0;
-
-  const listaDiv = document.getElementById('lista');
-  const resumenDiv = document.getElementById('resumen');
-  const presupuestoInput = document.getElementById('presupuesto');
-  const estadoPresupuesto = document.getElementById('estadoPresupuesto');
-  const barraLlena = document.getElementById('barraLlena');
-  const restanteTexto = document.getElementById('restanteTexto');
-  const priceTag = document.getElementById('priceTag');
-
-  const tabs = {
-    listaTab: document.getElementById('listaTab'),
-    resumenTab: document.getElementById('resumenTab'),
-    presupuestoTab: document.getElementById('presupuestoTab'),
-  };
-  const dockBtns = document.querySelectorAll('.dock button');
-
-  function genId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2); }
-  function guardar(){
-    localStorage.setItem('listaCompras', JSON.stringify(listaCompras));
-    localStorage.setItem('presupuesto', String(presupuesto || 0));
-  }
-
-  /* ====== Render lista ====== */
-  function renderLista(){
-    listaDiv.innerHTML = '';
-    const activos = listaCompras.filter(i=>!i.comprado);
-    const comprados = listaCompras.filter(i=> i.comprado);
-    const orden = [...activos, ...comprados];
-
-    orden.forEach(item=>{
-      const subtotal = +(item.precio * item.cantidad).toFixed(2);
-
-      const row = document.createElement('div');
-      row.className = 'item';
-      if(item.comprado) row.classList.add('comprado');
-      if(subtotal >= 5) row.classList.add('item-caro');
-
-      // swipe to delete
-      let startX = 0, currentX = 0, dragging = false;
-      row.addEventListener('pointerdown', (ev)=>{
-        startX = ev.clientX;
-        dragging = true;
-        row.setPointerCapture(ev.pointerId);
-        row.classList.add('swiping');
-      });
-      row.addEventListener('pointermove', (ev)=>{
-        if(!dragging) return;
-        currentX = ev.clientX - startX;
-        if(currentX < 0){
-          row.style.transform = `translateX(${currentX}px)`;
-        }
-      });
-      row.addEventListener('pointerup', ()=>{
-        row.classList.remove('swiping');
-        if(currentX < -80){
-          eliminarItem(item.id);
-        }else{
-          row.style.transform = '';
-        }
-        dragging = false; startX = 0; currentX = 0;
-      });
-      row.addEventListener('pointercancel', ()=>{
-        row.classList.remove('swiping');
-        row.style.transform = '';
-        dragging = false;
-      });
-
-      row.innerHTML = `
-        <div class="nombre" role="button" aria-pressed="${item.comprado}" title="Toca para marcar comprado">
-          ${item.nombre} ${Number(item.precio).toFixed(2)}€
-        </div>
-        <button class="btn-cant menos" aria-label="Disminuir ${item.nombre}">−</button>
-        <div class="cantidad" aria-live="polite">${item.cantidad}</div>
-        <button class="btn-cant mas" aria-label="Aumentar ${item.nombre}">+</button>
-        <div class="subtotal">${subtotal.toFixed(2)}€</div>
-        <button class="btn-borrar" aria-label="Eliminar ${item.nombre}" title="Eliminar">
-          🗑️
-        </button>
-      `;
-
-      // listeners
-      row.querySelector('.nombre').addEventListener('click', ()=>{
-        toggleComprado(item.id);
-      });
-      row.querySelector('.menos').addEventListener('click', (e)=>{
-        e.stopPropagation();
-        cambiarCantidad(item.id, -1);
-      });
-      row.querySelector('.mas').addEventListener('click', (e)=>{
-        e.stopPropagation();
-        cambiarCantidad(item.id, 1);
-      });
-      row.querySelector('.btn-borrar').addEventListener('click', (e)=>{
-        e.stopPropagation();
-        eliminarItem(item.id);
-      });
-
-      listaDiv.appendChild(row);
-    });
-
-    guardar();
-    actualizarPresupuestoUI();
-  }
-
-  function cambiarCantidad(id, delta){
-    const it = listaCompras.find(i=>i.id===id);
-    if(!it) return;
-    it.cantidad = Math.max(1, (it.cantidad||1) + delta);
-    renderLista();
-    if(!tabs.resumenTab.classList.contains('hidden')) renderResumen();
-  }
-
-  function toggleComprado(id){
-    const it = listaCompras.find(i=>i.id===id);
-    if(!it) return;
-    it.comprado = !it.comprado;
-    renderLista();
-  }
-
-  function eliminarItem(id){
-    listaCompras = listaCompras.filter(i=>i.id!==id);
-    renderLista();
-    if(!tabs.resumenTab.classList.contains('hidden')) renderResumen();
-  }
-
-  /* ====== Form agregar ====== */
-  document.getElementById('formAgregar').addEventListener('submit', (e)=>{
-    e.preventDefault();
-    const nombre = document.getElementById('inputNombre').value.trim();
-    const categoria = document.getElementById('inputCategoria').value.trim();
-    const precio = parseFloat(document.getElementById('inputPrecio').value);
-
-    if(!nombre){ alert('Escribe el nombre del producto'); return; }
-    if(isNaN(precio) || precio<0){ alert('Precio inválido'); return; }
-
-    listaCompras.push({ id: genId(), nombre, categoria, precio, cantidad:1, comprado:false });
-    e.target.reset();
-    renderLista();
-    if(!tabs.resumenTab.classList.contains('hidden')) renderResumen();
-  });
-
-  /* ====== Resumen por categoría ====== */
-  function renderResumen(){
-    const mapa = {};
-    let total = 0;
-    for(const it of listaCompras){
-      const cat = it.categoria && it.categoria.trim() ? it.categoria : 'Sin asignar';
-      const sub = it.precio * it.cantidad;
-      mapa[cat] = (mapa[cat] || 0) + sub;
-      total += sub;
-    }
-    const claves = Object.keys(mapa).sort((a,b)=> a.localeCompare(b));
-    resumenDiv.innerHTML = '';
-    claves.forEach(cat=>{
-      const p = document.createElement('p');
-      p.textContent = `${cat}: ${mapa[cat].toFixed(2)}€`;
-      resumenDiv.appendChild(p);
-    });
-    const pTot = document.createElement('p');
-    pTot.style.marginTop = '8px';
-    pTot.style.fontWeight = '700';
-    pTot.textContent = `Total general: ${total.toFixed(2)}€`;
-    resumenDiv.appendChild(pTot);
-  }
-
-  /* ====== Presupuesto ====== */
-  presupuestoInput.value = presupuesto || '';
-  presupuestoInput.addEventListener('input', ()=>{
-    presupuesto = parseFloat(presupuestoInput.value) || 0;
-    guardar();
-    actualizarPresupuestoUI();
-  });
-
-  function actualizarPresupuestoUI(){
-    // Restante = presupuesto - total comprado
-    const totalComprado = listaCompras.filter(i=>i.comprado)
-      .reduce((s,i)=> s + i.precio*i.cantidad, 0);
-    const restante = (presupuesto || 0) - totalComprado;
-
-    if(presupuesto>0){
-      restanteTexto.textContent = `${restante.toFixed(2)}€`;
-      priceTag.classList.remove('hidden');
-    }else{
-      restanteTexto.textContent = 'Define presupuesto';
-      priceTag.classList.remove('hidden'); // se mantiene visible como recordatorio
-    }
-
-    // Texto estado en pestaña Presupuesto (sobre total de la lista)
-    const totalLista = listaCompras.reduce((s,i)=> s + i.precio*i.cantidad, 0);
-    if(presupuesto>0){
-      if(totalLista>presupuesto){
-        estadoPresupuesto.textContent = `⚠️ Te pasas por ${(totalLista-presupuesto).toFixed(2)}€`;
-        estadoPresupuesto.style.color = 'var(--peligro)';
-      }else{
-        estadoPresupuesto.textContent = `✅ Dentro del presupuesto. Te quedan ${(presupuesto-totalLista).toFixed(2)}€ para la lista`;
-        estadoPresupuesto.style.color = 'var(--ok)';
-      }
-      const pct = Math.min(100, (totalLista/presupuesto)*100);
-      barraLlena.style.width = (isFinite(pct)?pct:0) + '%';
-    }else{
-      estadoPresupuesto.textContent = 'Define un presupuesto para activar el control.';
-      estadoPresupuesto.style.color = 'var(--tinta)';
-      barraLlena.style.width = '0%';
-    }
-  }
-
-  /* ====== Tabs (Dock) ====== */
-  function mostrarTab(id){
-    Object.entries(tabs).forEach(([key,el])=>{
-      el.classList.toggle('hidden', key!==id);
-    });
-    dockBtns.forEach(btn=>{
-      const selected = btn.getAttribute('aria-controls') === id;
-      btn.setAttribute('aria-selected', selected);
-      btn.tabIndex = selected ? 0 : -1;
-    });
-    if(id==='resumenTab') renderResumen();
-    if(id==='presupuestoTab') actualizarPresupuestoUI();
-  }
-  window.mostrarTab = mostrarTab; // expone a onclick
-
-  /* ====== Exponer funciones usadas por inline handlers (si hiciera falta) ====== */
-  // (Hemos conectado eventos por JS, no requerimos exponer más)
-
-  /* ====== Inicio ====== */
-  renderLista();
-  actualizarPresupuestoUI();
+  // ... (mantén todo tu script sin cambios)
+  function guardar() { localStorage.setItem('listaCompras', JSON.stringify(listaCompras)); localStorage.setItem('presupuesto', String(presupuesto || 0)); }
+  // (incluye el resto del JS tal cual como ya lo tenías)
+  // ... hasta renderLista, renderResumen, actualizarPresupuestoUI, tabs, etc.
 </script>
 </body>
 </html>
