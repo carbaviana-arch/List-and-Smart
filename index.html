@@ -3,26 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Le Cellier - Lista de Compras</title>
+<title>Le Cellier</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4a90e2">
+<link rel="icon" href="icons/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>
 :root {
-  --color-bg: #f9f9f9;
+  --color-bg: #f4f6f8;
   --color-card: #ffffff;
-  --color-text: #333333;
+  --color-text: #333;
   --color-primary: #4a90e2;
   --color-danger: #e94e3f;
-  --color-success: #4caf50;
-  --shadow: 0 2px 6px rgba(0,0,0,0.1);
+  --shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 * { box-sizing: border-box; }
-
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
   background: var(--color-bg);
-  color: var(--color-text);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -31,88 +32,74 @@ body {
 /* HEADER */
 header {
   text-align: center;
-  padding: 20px;
-  font-size: 2em;
+  padding: 15px;
+  font-size: 1.5em;
   font-weight: 600;
   color: var(--color-primary);
+  background: var(--color-card);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 /* FORM */
 form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 8px;
+  padding: 10px;
   background: var(--color-card);
-  padding: 15px;
-  margin: 0 15px 15px;
-  border-radius: 10px;
   box-shadow: var(--shadow);
 }
-
 form input, form select, form button {
-  padding: 10px;
+  padding: 8px;
   font-size: 1em;
   border: 1px solid #ddd;
   border-radius: 6px;
 }
-
-form input, form select { flex: 1; min-width: 120px; }
-
 form button {
   background: var(--color-primary);
-  color: #fff;
+  color: white;
   border: none;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
 }
-
 form button:hover { background: #357ab8; }
 
 /* LISTA */
 ul {
   list-style: none;
-  padding: 0 15px;
+  padding: 10px;
   margin: 0;
 }
-
 .item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: var(--color-card);
-  margin-bottom: 10px;
-  padding: 12px 15px;
+  padding: 12px;
+  margin-bottom: 8px;
   border-radius: 8px;
   box-shadow: var(--shadow);
-  transition: all 0.3s;
+  animation: fadeIn 0.3s ease;
 }
+.item.comprado { opacity: 0.5; }
+@keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
 
-.item.comprado {
-  opacity: 0.5;
-}
-
-.cantidad-control {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
+.cantidad-control { display: flex; align-items: center; gap: 5px; }
 .cantidad-control button {
   background: var(--color-primary);
-  color: #fff;
+  color: white;
   border: none;
-  padding: 4px 8px;
+  padding: 3px 7px;
   border-radius: 5px;
   cursor: pointer;
 }
 
-.cantidad-control button:hover { background: #357ab8; }
-
 .acciones button {
   background: transparent;
   border: none;
-  font-size: 1.2em;
   cursor: pointer;
   color: var(--color-danger);
 }
@@ -120,56 +107,46 @@ ul {
 /* TOTAL Y PRESUPUESTO */
 .total-compra, .presupuesto-restante {
   text-align: center;
-  margin: 15px;
+  padding: 10px;
   font-weight: 600;
   font-size: 1.2em;
 }
-
 .presupuesto-restante.negative {
   color: var(--color-danger);
   animation: alerta 1s infinite;
 }
-
-@keyframes alerta {
-  0%,100% { opacity: 1; }
-  50% { opacity: 0.6; }
-}
+@keyframes alerta { 0%,100% {opacity:1;} 50% {opacity:0.5;} }
 
 /* DOCK */
 .dock {
-  position: fixed;
+  position: sticky;
   bottom: 0;
-  width: 100%;
   display: flex;
   justify-content: space-around;
   background: var(--color-card);
-  padding: 10px 0;
+  padding: 8px 0;
   box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
 }
-
 .dock button {
-  background: var(--color-primary);
-  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: none;
   border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
+  font-size: 0.8em;
   cursor: pointer;
-  font-weight: 600;
+  color: var(--color-primary);
 }
 
 /* MODAL */
 .modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   display: none;
   justify-content: center;
   align-items: center;
   background: rgba(0,0,0,0.5);
 }
-
 .modal-content {
   background: var(--color-card);
   padding: 20px;
@@ -178,25 +155,17 @@ ul {
   width: 90%;
   text-align: center;
 }
-
 .modal-content table {
   width: 100%;
   margin-bottom: 15px;
-  border-collapse: collapse;
 }
-
-.modal-content td {
-  padding: 6px 4px;
-}
-
 .close-btn {
-  padding: 8px 12px;
   background: var(--color-primary);
-  color: #fff;
+  color: white;
   border: none;
+  padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
-  font-weight: 600;
 }
 </style>
 </head>
@@ -204,34 +173,31 @@ ul {
 
 <header>Le Cellier</header>
 
-<main>
-  <form id="form-producto">
-    <input type="text" id="nombre" placeholder="Producto" required>
-    <input type="number" id="precio" placeholder="Precio (€)" step="0.01" required>
-    <input type="number" id="cantidad" placeholder="Cantidad" value="1" min="1" required>
-    <select id="categoria">
-      <option value="Vegetales">Vegetales</option>
-      <option value="Frutas">Frutas</option>
-      <option value="Víveres">Víveres</option>
-      <option value="Carnes">Carnes</option>
-      <option value="Cuidado Personal">Cuidado Personal</option>
-      <option value="Limpieza">Limpieza</option>
-      <option value="Bebidas">Bebidas</option>
-      <option value="Aperitivos y Dulces">Aperitivos y Dulces</option>
-      <option value="Panadería">Panadería</option>
-    </select>
-    <button type="submit">Añadir</button>
-  </form>
+<form id="form-producto">
+  <input type="text" id="nombre" placeholder="Producto" required>
+  <input type="number" id="precio" placeholder="Precio (€)" step="0.01" required>
+  <input type="number" id="cantidad" placeholder="Cant." value="1" min="1" required>
+  <select id="categoria">
+    <option value="Vegetales">Vegetales</option>
+    <option value="Frutas">Frutas</option>
+    <option value="Víveres">Víveres</option>
+    <option value="Carnes">Carnes</option>
+    <option value="Cuidado Personal">Cuidado Personal</option>
+    <option value="Limpieza">Limpieza</option>
+    <option value="Bebidas">Bebidas</option>
+    <option value="Aperitivos y Dulces">Aperitivos y Dulces</option>
+    <option value="Panadería">Panadería</option>
+  </select>
+  <button type="submit"><i data-lucide="plus"></i></button>
+</form>
 
-  <ul id="lista"></ul>
-
-  <div class="total-compra" id="total-compra">Total: €0.00</div>
-  <div id="presupuesto-restante" class="presupuesto-restante"></div>
-</main>
+<ul id="lista"></ul>
+<div class="total-compra" id="total-compra">Total: €0.00</div>
+<div id="presupuesto-restante" class="presupuesto-restante"></div>
 
 <div class="dock">
-  <button id="btn-resumen">Resumen</button>
-  <button id="btn-presupuesto">Presupuesto</button>
+  <button id="btn-resumen"><i data-lucide="list"></i> Resumen</button>
+  <button id="btn-presupuesto"><i data-lucide="wallet"></i> Presupuesto</button>
 </div>
 
 <div class="modal" id="modal-resumen">
@@ -243,6 +209,8 @@ ul {
 </div>
 
 <script>
+lucide.createIcons();
+
 let lista = JSON.parse(localStorage.getItem('lista')) || [];
 let presupuesto = parseFloat(localStorage.getItem('presupuesto')) || 0;
 
@@ -253,12 +221,8 @@ const tablaResumen = document.getElementById('tabla-resumen');
 const totalCompraEl = document.getElementById('total-compra');
 const presupuestoRestanteEl = document.getElementById('presupuesto-restante');
 
-function guardarLista() {
-  localStorage.setItem('lista', JSON.stringify(lista));
-}
-function guardarPresupuesto() {
-  localStorage.setItem('presupuesto', presupuesto);
-}
+function guardarLista() { localStorage.setItem('lista', JSON.stringify(lista)); }
+function guardarPresupuesto() { localStorage.setItem('presupuesto', presupuesto); }
 
 function renderLista() {
   listaEl.innerHTML = '';
@@ -278,18 +242,18 @@ function renderLista() {
         + €${subtotal.toFixed(2)}
       </span>
       <div class="acciones">
-        <button onclick="eliminar(${i}); event.stopPropagation();">🗑</button>
+        <button onclick="eliminar(${i}); event.stopPropagation();"><i data-lucide="trash-2"></i></button>
       </div>
     `;
     listaEl.appendChild(li);
   });
+  lucide.createIcons();
   actualizarTotales();
 }
 
 function actualizarTotales() {
   let total = lista.reduce((acc, item) => acc + item.precio*item.cantidad, 0);
   totalCompraEl.textContent = `Total: €${total.toFixed(2)}`;
-
   if(presupuesto>0){
     let restante = presupuesto-total;
     presupuestoRestanteEl.textContent = `Presupuesto restante: €${restante.toFixed(2)}`;
@@ -297,24 +261,9 @@ function actualizarTotales() {
   }
 }
 
-function toggleComprado(i){
-  lista[i].comprado = !lista[i].comprado;
-  guardarLista();
-  renderLista();
-}
-
-function cambiarCantidad(i, delta){
-  lista[i].cantidad += delta;
-  if(lista[i].cantidad<1) lista[i].cantidad=1;
-  guardarLista();
-  renderLista();
-}
-
-function eliminar(i){
-  lista.splice(i,1);
-  guardarLista();
-  renderLista();
-}
+function toggleComprado(i){ lista[i].comprado = !lista[i].comprado; guardarLista(); renderLista(); }
+function cambiarCantidad(i, delta){ lista[i].cantidad = Math.max(1, lista[i].cantidad+delta); guardarLista(); renderLista(); }
+function eliminar(i){ lista.splice(i,1); guardarLista(); renderLista(); }
 
 form.addEventListener('submit', e=>{
   e.preventDefault();
@@ -327,12 +276,10 @@ form.addEventListener('submit', e=>{
   renderLista();
   form.reset();
   document.getElementById('cantidad').value = 1;
-  // mantiene categoría seleccionada
 });
 
-function mostrarResumen(){
-  let resumen={};
-  let total=0;
+document.getElementById('btn-resumen').addEventListener('click', ()=>{
+  let resumen={}, total=0;
   lista.forEach(item=>{
     if(!resumen[item.categoria]) resumen[item.categoria]=0;
     resumen[item.categoria]+=item.precio*item.cantidad;
@@ -344,22 +291,25 @@ function mostrarResumen(){
   }
   tablaResumen.innerHTML+=`<tr><td><strong>Total</strong></td><td><strong>€${total.toFixed(2)}</strong></td></tr>`;
   modal.style.display='flex';
-}
+});
 
-document.getElementById('btn-resumen').addEventListener('click', mostrarResumen);
-document.getElementById('cerrar-modal').addEventListener('click', ()=>{modal.style.display='none';});
+document.getElementById('cerrar-modal').addEventListener('click', ()=>{ modal.style.display='none'; });
 
 document.getElementById('btn-presupuesto').addEventListener('click', ()=>{
-  let nuevoPresupuesto = prompt('Introduce tu presupuesto (€):', presupuesto||'');
-  if(nuevoPresupuesto!==null && !isNaN(parseFloat(nuevoPresupuesto))){
-    presupuesto=parseFloat(nuevoPresupuesto);
+  let nuevo = prompt('Introduce tu presupuesto (€):', presupuesto||'');
+  if(nuevo!==null && !isNaN(parseFloat(nuevo))){
+    presupuesto=parseFloat(nuevo);
     guardarPresupuesto();
     actualizarTotales();
   }
 });
 
 renderLista();
-</script>
 
+/* PWA Install */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
+</script>
 </body>
 </html>
