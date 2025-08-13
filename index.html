@@ -17,21 +17,53 @@
 body {
   margin: 0;
   font-family: 'Playfair Display', serif;
-  background: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+  background: url('https://www.transparenttextures.com/patterns/wood-pattern.png') repeat;
+  background-size: cover;
   color: var(--color-text);
-  border: 10px solid var(--color-border);
+  border: 12px double var(--color-border);
+  padding: 5px;
   min-height: 100vh;
   box-sizing: border-box;
 }
 
 header {
   text-align: center;
-  padding: 15px;
+  padding: 15px 10px;
   font-family: 'Rye', cursive;
-  font-size: 2.2em;
+  font-size: 2.5em;
   color: var(--color-border);
-  border-bottom: 3px double var(--color-border);
   background-color: rgba(255, 255, 255, 0.85);
+  border: 4px double var(--color-border);
+  margin-bottom: 10px;
+  position: relative;
+}
+
+header svg {
+  width: 80px;
+  height: auto;
+  fill: var(--color-border);
+}
+
+.header-ornament-top {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.header-ornament-bottom {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.separator {
+  text-align: center;
+  font-family: 'Rye', cursive;
+  font-size: 1.2em;
+  color: var(--color-border);
+  margin: 10px 0;
 }
 
 main {
@@ -46,7 +78,7 @@ form {
   margin-bottom: 15px;
   background: rgba(255, 255, 255, 0.85);
   padding: 10px;
-  border: 2px solid var(--color-border);
+  border: 3px double var(--color-border);
 }
 
 input, select, button {
@@ -128,11 +160,17 @@ ul {
   font-weight: bold;
   font-size: 1.4em;
   color: var(--color-border);
-  text-align: right;
+  text-align: center;
+}
+
+.total-compra::before, .total-compra::after {
+  content: "❧";
+  margin: 0 5px;
+  color: var(--color-border);
 }
 
 .presupuesto-restante {
-  text-align: right;
+  text-align: center;
   font-size: 1.2em;
   margin-top: 4px;
   color: var(--color-text);
@@ -141,19 +179,20 @@ ul {
 /* Etiqueta flotante vintage */
 .vintage-tag {
   position: fixed;
-  bottom: 70px; /* subimos para no tapar el dock */
+  bottom: 70px;
   right: 15px;
   background: var(--color-bg);
   color: var(--color-border);
   padding: 15px 20px;
-  border: 3px solid var(--color-border);
-  border-radius: 12px;
+  border: 4px double var(--color-border);
+  border-radius: 8px;
   font-family: 'Rye', cursive;
   font-size: 1.4em;
   box-shadow: 0 4px 10px rgba(0,0,0,0.5);
   z-index: 1000;
   text-align: center;
-  min-width: 120px;
+  min-width: 140px;
+  position: relative;
 }
 
 .vintage-tag .label {
@@ -163,6 +202,15 @@ ul {
   border-bottom: 2px solid var(--color-border);
   margin-bottom: 5px;
   padding-bottom: 3px;
+}
+
+.vintage-tag svg {
+  width: 50px;
+  fill: var(--color-border);
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .vintage-tag.negative {
@@ -179,7 +227,7 @@ ul {
   background: rgba(255, 255, 255, 0.85);
   display: flex;
   justify-content: space-around;
-  border-top: 3px double var(--color-border);
+  border-top: 4px double var(--color-border);
 }
 
 .dock button {
@@ -217,7 +265,7 @@ ul {
 
 .modal-content {
   background: var(--color-bg);
-  border: 3px solid var(--color-border);
+  border: 3px double var(--color-border);
   padding: 20px;
   border-radius: 8px;
   width: 90%;
@@ -229,6 +277,12 @@ ul {
   font-family: 'Rye', cursive;
   color: var(--color-border);
   margin-bottom: 15px;
+}
+
+.modal-content h2::before, .modal-content h2::after {
+  content: "❧";
+  margin: 0 5px;
+  color: var(--color-border);
 }
 
 .modal-content table {
@@ -261,14 +315,24 @@ ul {
 </head>
 <body>
 
-<header>Le Cellier</header>
+<header>
+  <div class="header-ornament-top">
+    <svg viewBox="0 0 100 20"><path d="M0,10 Q25,0 50,10 T100,10" /></svg>
+  </div>
+  Le Cellier
+  <div class="header-ornament-bottom">
+    <svg viewBox="0 0 100 20"><path d="M0,10 Q25,20 50,10 T100,10" /></svg>
+  </div>
+</header>
 
 <div id="vintage-tag" class="vintage-tag" style="display:none;">
+  <svg viewBox="0 0 100 20"><path d="M0,10 Q25,0 50,10 T100,10" /></svg>
   <span class="label">RESTANTE</span>
   <span id="vintage-value">€0.00</span>
 </div>
 
 <main>
+  <div class="separator">✦ Lista de Productos ✦</div>
   <form id="form-producto">
     <input type="text" id="nombre" placeholder="Nombre del producto" required>
     <input type="number" id="precio" placeholder="Precio unitario (€)" step="0.01" required>
