@@ -10,6 +10,8 @@
   --color-bg: #000000;
   --color-text: #FFFFFF;
   --color-gold: #C9A23F;
+  --color-vintage-bg: #f8f1e4;
+  --color-vintage-border: #5a4634;
 }
 
 body {
@@ -90,6 +92,7 @@ ul {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  font-size: 1.2em;
 }
 
 .cantidad-control button {
@@ -98,41 +101,59 @@ ul {
   padding: 2px 6px;
   cursor: pointer;
   font-weight: bold;
-  font-size: 1em;
+  font-size: 1.2em;
 }
 
 .precio {
-  font-size: 1.1em;
+  font-size: 1.3em;
 }
 
 .total-compra {
   margin-top: 10px;
   font-weight: bold;
-  font-size: 1.2em;
+  font-size: 1.4em;
   color: var(--color-gold);
   text-align: right;
 }
 
 .presupuesto-restante {
   text-align: right;
-  font-size: 1em;
+  font-size: 1.2em;
   margin-top: 4px;
   color: var(--color-text);
 }
 
-/* Etiqueta flotante vintage */
+/* Etiqueta flotante vintage inspirada en la imagen */
 .vintage-tag {
   position: fixed;
-  top: 15px;
+  bottom: 15px;
   right: 15px;
-  background: var(--color-gold);
-  color: var(--color-bg);
-  padding: 10px 15px;
-  border-radius: 50% 20% / 10% 40%;
+  background: var(--color-vintage-bg);
+  color: var(--color-vintage-border);
+  padding: 15px 20px;
+  border: 3px solid var(--color-vintage-border);
+  border-radius: 12px;
   font-family: 'Rye', cursive;
-  font-size: 1.2em;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  font-size: 1.4em;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
   z-index: 1000;
+  text-align: center;
+  min-width: 120px;
+}
+
+.vintage-tag .label {
+  display: block;
+  font-size: 0.6em;
+  letter-spacing: 1px;
+  border-bottom: 2px solid var(--color-vintage-border);
+  margin-bottom: 5px;
+  padding-bottom: 3px;
+}
+
+.vintage-tag.negative {
+  background: #f5d6d6;
+  border-color: #a33;
+  color: #a33;
 }
 
 .dock {
@@ -224,7 +245,10 @@ ul {
 
 <header>Le Cellier</header>
 
-<div id="vintage-tag" class="vintage-tag" style="display:none;"></div>
+<div id="vintage-tag" class="vintage-tag" style="display:none;">
+  <span class="label">RESTANTE</span>
+  <span id="vintage-value">€0.00</span>
+</div>
 
 <main>
   <form id="form-producto">
@@ -282,6 +306,7 @@ const tablaResumen = document.getElementById('tabla-resumen');
 const totalCompraEl = document.getElementById('total-compra');
 const presupuestoRestanteEl = document.getElementById('presupuesto-restante');
 const vintageTag = document.getElementById('vintage-tag');
+const vintageValue = document.getElementById('vintage-value');
 
 function guardarLista() {
   localStorage.setItem('lista', JSON.stringify(lista));
@@ -326,8 +351,10 @@ function actualizarTotales() {
     let restante = presupuesto - total;
     presupuestoRestanteEl.textContent = `Presupuesto restante: €${restante.toFixed(2)}`;
     presupuestoRestanteEl.style.color = restante < 0 ? 'red' : 'var(--color-text)';
+
     vintageTag.style.display = 'block';
-    vintageTag.textContent = `€${restante.toFixed(2)}`;
+    vintageValue.textContent = `€${restante.toFixed(2)}`;
+    vintageTag.classList.toggle('negative', restante < 0);
   } else {
     presupuestoRestanteEl.textContent = '';
     vintageTag.style.display = 'none';
